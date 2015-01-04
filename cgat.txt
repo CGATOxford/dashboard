@@ -1,0 +1,32 @@
+Coding:
+
+1. List of last 10 commits, who + when
+
+2. List of 10 recent/oldest open issues
+
+Cluster
+
+1. Cluster usage
+
+2. Number of jobs in the queue/running
+
+Storage
+
+1 10 Largest projects + leader list (up/down)
+
+2 Project with largest increase in last week: xxx %
+
+3 10 projects with largest inflations
+
+4 Graph of storage development - last month
+   
+Science
+
+Next journal club paper?
+
+Days since last publication
+
+Days since last blog, plus topic
+
+Days since last tweet, plus last tweet
+
