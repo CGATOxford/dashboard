@@ -1,5 +1,6 @@
 require 'json'
 require 'time'
+require 'date'
 require 'active_support/core_ext'
 require 'ostruct'
 require 'logger'
@@ -69,6 +70,8 @@ class Leaderboard
 		opts = OpenStruct.new(default_opts.deep_merge(opts))
 		opts.skip_orga_members ||= []
 		opts.date_until ||= Time.now.to_datetime
+                # patch: set since option
+                opts.since ||= (Time.now - 360).to_datetime
 
 		# Comparing current with last period, so need twice the interval
 		date_since = opts.date_until - opts.days_interval*2
@@ -88,7 +91,7 @@ class Leaderboard
 		events.each do |event|
 			# Filter by date range
 			next if event.datetime < date_since or event.datetime > opts.date_until
-
+                        puts event
 			author = event.key
 			period = (event.datetime > opts.date_until - opts.days_interval) ? 'current' : 'previous'
 			events_by_actor[author] ||= {'periods' => {}}
