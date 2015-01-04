@@ -1,42 +1,11 @@
 # Github Contribution Dashboard
 
-[![Build Status](https://travis-ci.org/chillu/github-dashing.png?branch=master)](https://travis-ci.org/chillu/github-dashing)
+[![Build Status](https://travis-ci.org/CGATProject/github-dashing.png?branch=master)](https://travis-ci.org/CGATProject/github-dashing)
 
 Dashboard to monitor the health of github projects based on their contribution statistics.
 
- - Aggregates usage data across multiple repos from the Github API
- - Widgets support aggregate statistics of multiple repos or even all repos within an organization.
- - A leaderboard aggregates a score for the last 30 days on each contributor.
- - Contributor scores based on activity in commits as well as in comments and pull requests.
- - [Travis CI](http://travis-ci.org) build status across multiple branches
- - [Scrutinizer CI](https://scrutinizer-ci.com/) code quality metrics
- - Trend projections for current month on issues opened, issues closed and pull requests
- - Quick integration of other data sources through a common widget framework
- - Easy hosting through [Heroku](http://heroku.com)
-
-All visualizations are optimized to encourage direct action by individuals, so prefers short-term trends and
-relative measures over long-term data. For example, the leaderboard only inspects the last 30 days
-of contributions, allowing new contributors to get to the top more easily.
-
-Preview: The [SilverStripe CMS](http://silverstripe.org) project, aggregating over 50 repositories
-that the project either maintains or actively contributes to. 
-View it live at [github-dashing.herokuapp.com](http://github-dashing.herokuapp.com/default).
-![Preview](assets/images/preview.png?raw=true)
-
-Preview: Leaderboard with detailed scoring (on hover)
-![Preview](assets/images/preview_leaderboard.png?raw=true)
-
-Preview: Pull request stats with trend projection for current month
-![Preview](assets/images/preview_stats.png?raw=true)
-
-Preview: Travis build status with per-branch status and code quality indicators
-![Preview](assets/images/preview_travis.png?raw=true)
-
-The dashboard is based on [Dashing](http://shopify.github.com/dashing), a Ruby web application
-built on the [Sinatra](http://www.sinatrarb.com) framework. It uses the Github API rather than 
-[githubarchive.org](http://githubarchive.org) data dumps because of the immediate nature
-of dashboard update (refreshes every hour by default). The code used to be based
-on Google BigQuery aggregation, but this turned out to be infeasible due to query size and BigQuery pricing.
+This dashboard is derived from https://github.com/chillu/github-dashing from the
+[SilverStripe CMS](http://silverstripe.org).
 
 ## Setup
 
@@ -44,7 +13,11 @@ on Google BigQuery aggregation, but this turned out to be infeasible due to quer
 
 First install the required dependencies through `bundle install`.
 
+The current version is tested with ruby 2.1.5. Version 2.2 failed due to some
+incompatabilities with the json gem.
+
 The project is configured through environment variables.
+
 Copy the `.env.sample` configuration file to `.env`.
 All configuration is optional, apart from either `ORGAS` or `REPOS`.
 
