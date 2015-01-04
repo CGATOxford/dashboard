@@ -213,6 +213,25 @@ class GithubBackend
 		return events
 	end
 
+	# Returns list of issues
+	def recent_issues(opts)
+          opts = OpenStruct.new(opts) unless opts.kind_of? OpenStruct
+          self.get_repos(opts).each do |repo|
+            begin
+              issues = request('issues',
+                               [repo, {:since => opts.since, :state => 'all'}])
+              # only take open issues
+              issues.select! do |issue|
+                issue.state == 'open'
+              end
+            rescue Octokit::Error => exception
+              Raven.capture_exception(exception)
+            end
+            issues = issues.take(opts["limit"])
+            return issues
+          end
+        end
+
 	def user(name)
 		request('user', [name])
 	end
