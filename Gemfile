@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'puma'
-# gem 'unicorn'
 gem 'rake'
 gem 'dashing'
 gem 'json', '~> 1.7.7'
