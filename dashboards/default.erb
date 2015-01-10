@@ -1,34 +1,44 @@
-<% content_for(:title) { "Github Open Source Dashboard" } %>
+<% content_for(:title) { "CGAT Dashboard" } %>
 <div class="gridster highcontrast">
-  <h1 class="header">CGAT Dashboard</h1>
+  <h1 class="header">CGAT Team Dashboard</h1>
   <ul>
-    <li data-row="1" data-col="1" data-sizex="2" data-sizey="2">
-      <div 
-        data-id="leaderboard" 
-        data-view="Leaderboard" 
-        data-unordered="true">
-      </div>
-    </li>
-    <li data-row="3" data-col="1" data-sizex="2" data-sizey="1">
+
+    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
       <div 
         data-id="travis" 
         data-view="NestedList"
         data-title="Travis Build Status">
       </div>
     </li>
-    <li data-row="1" data-col="3" data-sizex="2" data-sizey="1">
+
+    <li data-row=1" data-col="2" data-sizex="1" data-sizey="1">
       <div 
-        data-id="pull_requests" 
-        data-view="SeriesGraph" 
-        data-renderer="bar"
-        data-colors="#fff #888" 
-        data-title="Pulls opened this month" 
-        data-subtitle="Projected monthly trend compared to last month" 
-        data-padding-top="0.35"
-        class="widget-graph widget-graph-large-change-rate">
+        data-id="queues" 
+        data-view="NumberPair" 
+	data-title="Cluster status"
+	data-moreinfo="jobs running/queuing"
       </div>
     </li>
-    <li data-row="2" data-col="3" data-sizex="2" data-sizey="1">
+
+   <li data-row="1" data-col="3" data-sizex="1" data-sizey="1">
+      <div data-id="diskspace"
+      data-view="Number"
+      data-title="Storage status"
+      data-suffix="Tb"
+      data-moreinfo="available disk space"
+      </div>
+    </li>
+
+
+    <li data-row="1" data-col="6" data-sizex="2" data-sizey="2">
+      <div 
+        data-id="leaderboard" 
+        data-view="Leaderboard" 
+        data-unordered="true">
+      </div>
+    </li>
+
+    <li data-row="1" data-col="4" data-sizex="2" data-sizey="1">
       <div 
         data-id="issues_opened" 
         data-view="SeriesGraph" 
@@ -40,7 +50,7 @@
         class="widget-graph widget-graph-large-change-rate">
       </div>
     </li>
-    <li data-row="3" data-col="3" data-sizex="2" data-sizey="1">
+    <li data-row="2" data-col="4" data-sizex="2" data-sizey="1">
       <div 
         data-id="issues_closed" 
         data-view="SeriesGraph" 
@@ -52,13 +62,14 @@
         class="widget-graph widget-graph-large-change-rate">
       </div>
     </li>
-<!--     <li data-row="4" data-col="3" data-sizex="2" data-sizey="1">
+<!--
+    <li data-row="3" data-col="6" data-sizex="2" data-sizey="1">
       <div 
-        data-id="forum_unanswered" 
+        data-id="pull_requests" 
         data-view="SeriesGraph" 
         data-renderer="bar"
         data-colors="#fff #888" 
-        data-title="Unanswered forum posts" 
+        data-title="Pulls opened this month" 
         data-subtitle="Projected monthly trend compared to last month" 
         data-padding-top="0.35"
         class="widget-graph widget-graph-large-change-rate">
@@ -66,11 +77,37 @@
     </li>
 -->
 
-    <li data-row="1" data-col="3" data-sizex="3" data-sizey="2">
+    <li data-row="3" data-col="4" data-sizex="4" data-sizey="2">
       <div 
         data-id="recent_issues" 
         data-view="List" 
-	data-title="Recent issues"
+	data-title="Most recent open issues (Days open)"
+      </div>
+    </li>
+
+    <li data-row="2" data-col="1" data-sizex="2" data-sizey="1">
+      <div 
+        data-id="papers_published" 
+        data-view="SeriesGraph" 
+        data-renderer="bar"
+        data-colors="#fff #888" 
+        data-title="Papers published" 
+        data-subtitle="Papers published" 
+        data-padding-top="0.35"
+        class="widget-graph widget-graph-large-change-rate">
+      </div>
+    </li>
+
+    <li data-row="2" data-col="3" data-sizex="1" data-sizey="1">
+      <div data-view="Image" data-image="/logo.png"></div>
+    </li>
+
+
+    <li data-row="3" data-col="1" data-sizex="3" data-sizey="2">
+      <div 
+        data-id="topcited_papers" 
+        data-view="List" 
+	data-title="Most cited CGAT papers (Google Scholar)"
       </div>
     </li>
 

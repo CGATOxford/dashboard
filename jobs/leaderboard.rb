@@ -16,9 +16,10 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 	edits_weighting = (ENV['LEADERBOARD_EDITS_WEIGHTING'] || '').split(',')
 			.inject({}) {|c,pair|c.merge Hash[*pair.split('=')]}
 
+        # last thirty days
 	days_interval = 30
 	date_until = Time.now.to_datetime
-	# Comparing current with last period, so need twice the interval
+	# comparing current with last period, so need twice the interval
 	date_since = Time.at(date_until.to_i - days_interval*2)
 
 	actors = leaderboard.get( 

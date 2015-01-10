@@ -30,7 +30,6 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 	prev = series[0][-2][:y] rescue 0
 	trend = GithubDashing::Helper.trend_percentage_by_month(prev, current)
 	trend_class = GithubDashing::Helper.trend_class(trend)
-
 	send_event(
 		'pull_requests', 
 		{
@@ -38,7 +37,7 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 			displayedValue: current,
 			difference: trend,
 			trend_class: trend_class,
-			arrow: 'icon-arrow-' + trend_class
+                        arrow: 'icon-arrow-' + trend_class
 		}
 	)
 end

@@ -1,0 +1,24 @@
+$background-color:  #47bbb3;
+$value1-color:       #0f0;
+$value2-color:       #f00;
+
+$title-color:       rgba(255, 255, 255, 0.7);
+$moreinfo-color:    rgba(255, 255, 255, 0.7);
+
+.widget-number-pair {
+
+  background-color: $background-color;
+
+  .title {
+    color: $title-color;
+  }
+
+  .value1 {
+    color: $value1-color;
+  }
+
+  .value2 {
+    color: $value2-color;
+  }
+
+}
