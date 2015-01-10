@@ -10,12 +10,14 @@ TOP_CITED=10
 # length of title to return
 TITLE_LENGTH=40
 
+PHRASES="/ifs/devel/andreas/dashboard/jobs/phrases.list"
+
 
 SCHEDULER.every '1d', :first_in => '1s' do |job|
 
   # returns a single line
-  # csv = `python /ifs/devel/andreas/scholar.py/scholar.py --filename-phrases=/ifs/devel/andreas/github-dashing/jobs/phrases.list --csv`
-  text = `cat /ifs/devel/andreas/github-dashing/jobs/test.txt`
+  text = `python /ifs/devel/andreas/scholar.py/scholar.py --filename-phrases=#{PHRASES} --csv`
+  # text = `cat /ifs/devel/andreas/dashboard/jobs/test.txt`
 
   year_counts = Hash.new(0)
   total = 0
