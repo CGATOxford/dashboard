@@ -124,3 +124,20 @@ and the physical dashboard at the SilverStripe offices in Wellington, New Zealan
 
 # License
 Distributed under the MIT license
+
+# Notes
+
+Running dashing in linux but displaying under windows failed. The widgets were displayed,
+but did not present any data (only on closing). The solution was to use a different 
+server (see https://github.com/Shopify/dashing/issues/235).
+
+To use this, type:
+
+   gem install sentry-raven
+   rackup -p 3030 -s webrick
+
+
+
+
+
+

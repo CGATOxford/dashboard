@@ -8,11 +8,17 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 	backend = GithubBackend.new()
 	opened_series = [[],[]]
 	closed_series = [[],[]]
-	issues_by_period = backend.issue_count_by_status(
-		:orgas=>(ENV['ORGAS'].split(',') if ENV['ORGAS']), 
+        begin
+          issues_by_period = backend.issue_count_by_status(
+                :orgas=>(ENV['ORGAS'].split(',') if ENV['ORGAS']), 
 		:repos=>(ENV['REPOS'].split(',') if ENV['REPOS']),
 		:since=>ENV['SINCE']
-	).group_by_month(ENV['SINCE'].to_datetime)
+            ).group_by_month(ENV['SINCE'].to_datetime)
+        rescue Exception => e  
+          puts e.message  
+          puts e.backtrace.inspect
+          return
+        end
 	issues_by_period.each_with_index do |(period,issues),i|
 		timestamp = Time.strptime(period, '%Y-%m').to_i
 
