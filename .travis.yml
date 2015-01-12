@@ -1,6 +1,7 @@
 # replace ssh repository with https
 before_install:
     - sed -i 's/git@github.com:/https:\/\/github.com\//' Gemfile
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' Gemfile.lock
 
 language: ruby
 rvm:
