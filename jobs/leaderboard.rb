@@ -29,7 +29,8 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 		:repos=>(ENV['REPOS'].split(',') if ENV['REPOS']),
 		:weighting=>weighting,
 		:edits_weighting=>edits_weighting,
-		:skip_orga_members=>(ENV['LEADERBOARD_SKIP_ORGA_MEMBERS'].split(',') if ENV['LEADERBOARD_SKIP_ORGA_MEMBERS'])
+		:skip_orga_members=>(ENV['LEADERBOARD_SKIP_ORGA_MEMBERS'].split(',') if ENV['LEADERBOARD_SKIP_ORGA_MEMBERS']),
+		:skip_members=>(ENV['LEADERBOARD_SKIP_MEMBERS'].split(',') if ENV['LEADERBOARD_SKIP_MEMBERS'])
 	)
 
 	rows = actors.map do |actor|

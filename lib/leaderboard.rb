@@ -32,6 +32,8 @@ class Leaderboard
 	# - days_interval: (Integer) Number of days to check for a period
 	# - event_titles: (Hash) Event names to titles used in detail descriptions on the widget
 	# - skip_orga_members: (Array) Github organization names for which to exclude members.
+        # - skip_members: (Array) Github names of people to exclude
+
 	def get(opts={})
 		default_opts = {
 			:days_interval => 30,
@@ -65,10 +67,12 @@ class Leaderboard
 				'commits_additions' => 'lines of code added',
 				'commits_deletions' => 'lines of code deleted',
 			},
-			:skip_orga_members => []
+			:skip_orga_members => [],
+			:skip_members => []
 		}
 		opts = OpenStruct.new(default_opts.deep_merge(opts))
 		opts.skip_orga_members ||= []
+		opts.skip_members ||= []
 		opts.date_until ||= Time.now.to_datetime
                 # patch: set since option
                 opts.since ||= (Time.now - 360).to_datetime
@@ -104,6 +108,11 @@ class Leaderboard
 		events_by_actor.each do |actor,actor_data|
 			is_from_org = opts.skip_orga_members.select {|org|@backend.organization_member?(org, actor)}.length > 0
 			next if is_from_org
+
+                        to_skip = opts.skip_members.select {
+                             |name| actor[/#{name}/]}.length > 0
+                        puts "actor #{actor} #{to_skip}"
+                        next if to_skip
 
 			actor_data['periods'].each do |period,period_data|
 				desc = []
