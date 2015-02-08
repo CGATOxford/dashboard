@@ -1,4 +1,7 @@
+$: << File.expand_path('./lib', File.dirname(__FILE__))
+require 'dashing-contrib'
 require 'dashing'
+DashingContrib.configure
 require 'faraday'
 require 'faraday/http_cache'
 require 'time'
