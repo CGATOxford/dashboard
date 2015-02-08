@@ -107,7 +107,6 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
 			end
 			
 		end
-
 		item
 	end
 
@@ -128,7 +127,7 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
 			items: items
 		})
 	end
-
+  
 	$lastTravisItems = items
 
 end

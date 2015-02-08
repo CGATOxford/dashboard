@@ -95,7 +95,6 @@ class Leaderboard
 		events.each do |event|
 			# Filter by date range
 			next if event.datetime < date_since or event.datetime > opts.date_until
-                        puts event
 			author = event.key
 			period = (event.datetime > opts.date_until - opts.days_interval) ? 'current' : 'previous'
 			events_by_actor[author] ||= {'periods' => {}}
@@ -111,7 +110,6 @@ class Leaderboard
 
                         to_skip = opts.skip_members.select {
                              |name| actor[/#{name}/]}.length > 0
-                        puts "actor #{actor} #{to_skip}"
                         next if to_skip
 
 			actor_data['periods'].each do |period,period_data|

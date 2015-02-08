@@ -56,6 +56,7 @@ h2 .value-add {
 			// Avoid overlap with cols, a bit hacky
 			padding-bottom: 15px;
 			padding-left: 10px;
+                        font-size: 12px;
 		}
 
 		&.widget-graph .y_ticks {
@@ -134,6 +135,120 @@ h2 .value-add {
 	}
 
 	&.travis {
+		background-color: #aaa;
+		font-size: 14px;
+
+		ul {
+			margin: 0;
+		}
+
+		li {
+			float: left;
+			margin: 0 5px 5px 0;
+			padding: 3px;
+			border-radius: 3px;
+
+			* {
+				vertical-align: middle;
+			}
+
+			&.good {
+				background-color: darken($green, 10%);
+			}
+
+			&.bad {
+				background-color: $red;
+
+				// Show broken builds larger,
+				// with labels on a separate line.
+				.label {
+					font-size: 24px;
+					display: block;
+				}
+
+				ul {
+					display: block;
+
+					.label {
+						font-size: 14px;
+					}
+				}
+			}
+
+			&.none {
+				background-color: #555;
+			}
+
+			&.rating {
+				border-radius: 5px;
+				background: darken($orange, 10%);
+				padding: 0px 4px;
+				color: black;
+				font-size: 10px;
+
+				&.rating-0 {
+					background-color: $red;
+				}
+
+				&.rating-1 {
+					background-color: $red;
+				}
+
+				&.rating-2 {
+					background-color: $red;
+				}
+
+				&.rating-3 {
+					background-color: darken($orange, 10%);
+				}
+
+				&.rating-4 {
+					background-color: darken($orange, 10%);
+				}
+
+				&.rating-5 {
+					background-color: darken($orange, 10%);
+				}
+
+				&.rating-6 {
+					background-color: darken($orange, 10%);
+				}
+
+				&.rating-7 {
+					background-color: darken($green, 10%);
+				}
+
+				&.rating-8 {
+					background-color: darken($green, 10%);
+				}
+
+				&.rating-9 {
+					background-color: darken($green, 10%);
+				}
+
+				&.rating-10 {
+					background-color: darken($green, 10%);
+				}
+			}
+
+			a {
+				padding: 2px 4px;
+			}
+
+			a, ul, li {
+				display: inline-block;
+			}
+
+			li {
+				font-size: 11px;
+				border-radius: 3px;
+				margin: 0 5px 0 0;	
+				padding: 0;	
+			}
+		}
+	}
+
+	&.project_emails {
 		background-color: #aaa;
 		font-size: 14px;
 

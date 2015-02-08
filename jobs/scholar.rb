@@ -13,7 +13,7 @@ TITLE_LENGTH=40
 PHRASES="/ifs/devel/andreas/dashboard/jobs/phrases.list"
 
 
-SCHEDULER.every '1d', :first_in => '1s' do |job|
+SCHEDULER.every '10s', :first_in => '1s' do |job|
 
   # returns a single line
   text = `python /ifs/devel/andreas/scholar.py/scholar.py --filename-phrases=#{PHRASES} --csv`
