@@ -40,7 +40,6 @@ SCHEDULER.every '10s', :first_in => '1s' do |job|
   most_cited = []
 
   text.each{ |row| 
-      puts row
       m = REGEX.match(row)
       next if m.nil?
       # nbsp; will be converted to 0

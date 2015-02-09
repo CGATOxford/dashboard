@@ -4,6 +4,7 @@
 
 #= require_directory .
 #= require_tree ../../widgets
+#=require dashing-contrib/assets/widgets
 
 console.log("Yeah! The dashboard has started!")
 
