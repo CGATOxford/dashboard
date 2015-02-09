@@ -1,7 +1,6 @@
 # return number of publications per year and total number
 # of publications.
 # 
-require 'csv'
 require 'time'
 
 # number of top cited papers to include
@@ -10,14 +9,26 @@ TOP_CITED=10
 # length of title to return
 TITLE_LENGTH=40
 
-PHRASES="/ifs/devel/andreas/dashboard/jobs/phrases.list"
+# file needs to be manually downloaded, no 
+# Google Scholar API.
+DOWNLOAD="/ifs/home/andreas/scholar.html"
 
+# Regular expression mathing the following:
+# S='<td class="gsc_a_t"><a href=... class="gsc_a_at">TITLE</a><div class="gs_gray">AUTHORS</div><div class="gs_gray">REFERENCE<span class="gs_oph">, YEAR</span></div></td><td class="gsc_a_c"><a href=... class="gsc_a_ac">CITATIONS</a></td>'
+
+# Note that citations can be empty, in which case they are "&nbsp;"
+
+REGEX=/<td class="gsc_a_t">.*<a.*>(?<title>.*)<\/a><div.*>(?<authors>.*)<\/div><div.*>(?<reference>.*)<span.*>, (?<year>\d+)<\/span.*><a.*>(?<citations>.*)<\/a>/
 
 SCHEDULER.every '10s', :first_in => '1s' do |job|
 
   # returns a single line
-  text = `python /ifs/devel/andreas/scholar.py/scholar.py --filename-phrases=#{PHRASES} --csv`
-  # text = `cat /ifs/devel/andreas/dashboard/jobs/test.txt`
+  file = File.open(DOWNLOAD, :encoding=>"ISO-8859-1")
+
+  # split table at </tr> tag and make sure
+  # line starts with correct CSS class
+  text = file.read().split("<tr ").select{
+    |l| l[/^class="gsc_a_tr"/] }
 
   year_counts = Hash.new(0)
   total = 0
@@ -28,16 +39,18 @@ SCHEDULER.every '10s', :first_in => '1s' do |job|
   # list of most cited papers
   most_cited = []
 
-  text.encode('UTF-8', :invalid => :replace, :replace => '').split("\n").each do |line|
-    CSV.parse(line, {:col_sep => '|'} ) do |row|
-      title, url, year, num_citations, num_versions, cluster_id, url_pdf, url_citations, url_versions, url_citation, excerpt = row
-    
-      year_counts[year.to_i] += 1
+  text.each{ |row| 
+      puts row
+      m = REGEX.match(row)
+      next if m.nil?
+      # nbsp; will be converted to 0
+      citations = m["citations"].to_i
+      year = m["year"].to_i
+      year_counts[m["year"].to_i] += 1
       total += 1
-      most_cited.push([num_citations.to_i, year.to_i, title])
-      end
-    end
-
+      most_cited.push([citations, year, m["title"]])
+  }
+      
   series = []
   year_counts.keys.sort.each do |year|
     series << {
@@ -61,7 +74,6 @@ SCHEDULER.every '10s', :first_in => '1s' do |job|
                arrow: '',
              })
 
-
   rows = {}
   most_cited.take(TOP_CITED).each { |article|
     num_citations, year, title = article
@@ -72,9 +84,7 @@ SCHEDULER.every '10s', :first_in => '1s' do |job|
   }
 
   send_event('topcited_papers', {
-               items: rows.values })
-
-
+               items: rows.values})
 
 end
 
