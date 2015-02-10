@@ -5,18 +5,16 @@ require 'time'
 require 'date'
 require 'nokogiri'
 
-REPORT_DIRECTORY="/ifs/var/mon/isilon-disk/isilon-xml/"
+REPORT_GLOB="/ifs/var/mon/isilon-disk/isilon-xml/scheduled_quota_report_*.xml"
 
-# Top x number of projects to report
+# Top x number of projects to report, "other" is added.
 REPORT=9
 
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
-  # returns a single line
-  # text = `python /ifs/devel/andreas/cgat/scripts/cgat_scan_email.py -v 0 --glob="#{EMAIL_GLOB}" #{MULTIPLE}`
-
-  text = `cat #{REPORT_DIRECTORY}/scheduled_quota_report_1423185339.xml`
-  doc = Nokogiri::XML(text)
+  recent = Dir.glob(REPORT_GLOB).max_by {|f| File.mtime(f)}
+  file = File.open(recent)
+  doc = Nokogiri::XML(file.read())
   
   nodes = doc.xpath("//domains/domain").select{ |node|
     node.attributes["type"].value == "ALL" }
@@ -41,12 +39,14 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 
   rows = {}
   usages.each { |item|
+    tb = (item[:usage] / 1000000000000.0).round(1)
     rows[item[:path]] = {
-      label: item[:path],
-      value: (item[:usage] / 1000000000000.0).round(1),
+      label: "#{item[:path]}  (#{tb} Tb)",
+      value: tb,
     }
   }
 
   send_event('project_diskusage', {
                items: rows.values })
+
 end
