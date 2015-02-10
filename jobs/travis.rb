@@ -8,6 +8,9 @@ require File.expand_path('../../lib/travis_backend', __FILE__)
 
 $lastTravisItems = []
 
+# exclude branches older than this:
+MAX_AGE=60
+
 SCHEDULER.every '2m', :first_in => '1s' do |job|
   travis_backend = TravisBackend.new
   # scrutinizer_backend = ScrutinizerBackend.new
@@ -34,7 +37,7 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
   if ENV['REPOS']
     repo_slugs.concat(ENV['REPOS'].split(','))
   end
-  
+
   repo_slugs.sort!
 
   branches = repo_slugs.map do |repo_slug|
@@ -57,10 +60,17 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
       # stored through the "commits" association
       items = repo_branches['branches']
         .select do |branch|
-        commit = repo_branches['commits'].find{|commit|commit['id'] == branch['commit_id']}
+        commit = repo_branches['commits'].find{|commit|
+          commit['id'] == branch['commit_id']}
         branch_name = commit['branch']
+        
+        # title=>"2014-03-07T19:25:04Z"
+        days = Time.now.to_date - Date.parse(branch['finished_at'])
+        # ignore "old" branche
+        if days > MAX_DAYS
+          false
         # Ignore branches not in whitelist
-        if not branch_whitelist.match(branch_name) 
+        elsif not branch_whitelist.match(branch_name) 
           false
           # Ignore branches specifically blacklisted
         elsif branch_blacklist_by_repo.has_key?(repo_slug) and branch_blacklist_by_repo[repo_slug].include?(branch_name)
@@ -113,7 +123,7 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
     # end
     item
   end
-  
+
   # Sort by name, then by status
   branches.sort_by! do|item|
     if item['class'] == 'bad'
