@@ -1,0 +1,31 @@
+<% content_for(:title) { "CGAT Dashboard" } %>
+
+<div class="gridster highcontrast">
+  <h1 class="header">CGAT Dashboard - Branches</h1>
+  <ul>
+
+    <li data-row="1" data-col="1" data-sizex="3" data-sizey="3">
+      <div 
+        data-id="travis_branches" 
+        data-view="NestedList"
+        data-title="Branches and build status">
+	data-moreinfo="Branches active in the last 60 days"
+      </div>
+    </li>
+
+    <li data-row="1" data-col="4" data-sizex="2" data-sizey="1">
+      <div 
+        data-id="pull_requests" 
+        data-view="SeriesGraph" 
+        data-renderer="bar"
+        data-colors="#fff #888" 
+        data-title="Pulls opened this month" 
+        data-subtitle="Projected monthly trend compared to last month" 
+        data-padding-top="0.35"
+        class="widget-graph widget-graph-large-change-rate">
+      </div>
+    </li>
+
+  </ul>
+  <footer data-id="meta_stats" data-view="Meta"></footer>
+</div>
