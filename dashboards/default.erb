@@ -1,36 +1,21 @@
-<script type='text/javascript'>
-$(function() {
-  // These settings override the defaults set in application.coffee. You can do this on a per dashboard basis.
-  //  Dashing.gridsterLayout('[{"col":2,"row":1},{"col":1,"row":1},{"col":3,"row":1},{"col":2,"row":2},{"col":3,"row":2},{"col":1,"row":2},{"col":5,"row":1},{"col":4,"row":2},{"col":2,"row":3}]')
-  // Dashing.widget_base_dimensions = [370, 340]
-  // Dashing.numColumns = 5
-});
-</script>
-
-
 <% content_for(:title) { "CGAT Dashboard" } %>
+
+<script type='text/javascript'>
+ $(function() {
+   Dashing.gridsterLayout('[{"col":1,"row":1,"size_x":1,"size_y":1},{"col":2,"row":1,"size_x":1,"size_y":1},{"col":2,"row":2,"size_x":1,"size_y":1},{"col":1,"row":2,"size_x":1,"size_y":1},{"col":3,"row":1,"size_x":2,"size_y":1},{"col":3,"row":2,"size_x":2,"size_y":2},{"col":5,"row":1,"size_x":3,"size_y":2},{"col":5,"row":3,"size_x":3,"size_y":1}]')
+ });
+ </script>
+
 <div class="gridster highcontrast">
-  <h1 class="header">CGAT Team Dashboard</h1>
+
+  <h1 class="header">CGAT Dashboard - Overview</h1>
   <ul>
 
-    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
-      <div 
-        data-id="travis" 
-        data-view="NestedList"
-        data-title="Travis Build Status">
-      </div>
+    <li data-row="1" data-col="2" data-sizex="1" data-sizey="1">
+      <div data-view="Image" data-image="/logo.png"></div>
     </li>
 
-    <li data-row=1" data-col="2" data-sizex="1" data-sizey="1">
-      <div 
-        data-id="queues" 
-        data-view="NumberPair" 
-	data-title="Cluster status"
-	data-moreinfo="jobs running/queuing"
-      </div>
-    </li>
-
-   <li data-row="1" data-col="3" data-sizex="1" data-sizey="1">
+   <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
       <div data-id="diskspace"
       data-view="Number"
       data-title="Storage status"
@@ -39,63 +24,24 @@ $(function() {
       </div>
     </li>
 
-
-    <li data-row="1" data-col="6" data-sizex="2" data-sizey="2">
+    <li data-row=2" data-col="2" data-sizex="1" data-sizey="1">
       <div 
-        data-id="leaderboard" 
-        data-view="Leaderboard" 
-        data-unordered="true">
+        data-id="queues" 
+        data-view="NumberPair" 
+	data-title="Cluster status"
+	data-moreinfo="jobs running/queuing"
       </div>
     </li>
 
-    <li data-row="1" data-col="4" data-sizex="2" data-sizey="1">
+    <li data-row="2" data-col="1" data-sizex="1" data-sizey="1">
       <div 
-        data-id="issues_opened" 
-        data-view="SeriesGraph" 
-        data-renderer="bar"
-        data-colors="#fff #888" 
-        data-title="Issues opened this month" 
-        data-subtitle="Projected monthly trend compared to last month" 
-        data-padding-top="0.35"
-        class="widget-graph widget-graph-large-change-rate">
-      </div>
-    </li>
-    <li data-row="2" data-col="4" data-sizex="2" data-sizey="1">
-      <div 
-        data-id="issues_closed" 
-        data-view="SeriesGraph" 
-        data-renderer="bar"
-        data-colors="#fff #888" 
-        data-title="Issues closed this month" 
-        data-subtitle="Projected monthly trend compared to last month" 
-        data-padding-top="0.35"
-        class="widget-graph widget-graph-large-change-rate">
-      </div>
-    </li>
-<!--
-    <li data-row="3" data-col="6" data-sizex="2" data-sizey="1">
-      <div 
-        data-id="pull_requests" 
-        data-view="SeriesGraph" 
-        data-renderer="bar"
-        data-colors="#fff #888" 
-        data-title="Pulls opened this month" 
-        data-subtitle="Projected monthly trend compared to last month" 
-        data-padding-top="0.35"
-        class="widget-graph widget-graph-large-change-rate">
-      </div>
-    </li>
--->
-
-    <li data-row="3" data-col="4" data-sizex="4" data-sizey="2">
-      <div 
-        data-id="recent_issues" 
-        data-view="List" 
-	data-title="Most recent open issues (Days open)"
+        data-id="twitter_user_followers" 
+        data-view="Number" 
+	data-title="Twitter followers"
       </div>
     </li>
 
-    <li data-row="2" data-col="1" data-sizex="2" data-sizey="1">
+    <li data-row="1" data-col="3" data-sizex="2" data-sizey="1">
       <div 
         data-id="papers_published" 
         data-view="SeriesGraph" 
@@ -108,18 +54,30 @@ $(function() {
       </div>
     </li>
 
-    <li data-row="2" data-col="3" data-sizex="1" data-sizey="1">
-      <div data-view="Image" data-image="/logo.png"></div>
+    <li data-row="2" data-col="3" data-sizex="2" data-sizey="2">
+      <div 
+        data-id="leaderboard" 
+        data-view="Leaderboard" 
+        data-unordered="true">
+      </div>
     </li>
 
-
-    <li data-row="3" data-col="1" data-sizex="3" data-sizey="2">
+    <li data-row="1" data-col="5" data-sizex="3" data-sizey="2">
       <div 
         data-id="topcited_papers" 
         data-view="List" 
 	data-title="Most cited CGAT papers (Google Scholar)"
       </div>
     </li>
+
+    <li data-row="3" data-col="5" data-sizex="3" data-sizey="1">
+      <div 
+        data-id="travis_master" 
+        data-view="NestedList"
+        data-title="Travis Build Status">
+      </div>
+    </li>
+
 
   </ul>
   <footer data-id="meta_stats" data-view="Meta"></footer>

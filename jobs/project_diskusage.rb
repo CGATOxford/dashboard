@@ -8,7 +8,7 @@ require 'nokogiri'
 REPORT_DIRECTORY="/ifs/var/mon/isilon-disk/isilon-xml/"
 
 # Top x number of projects to report
-REPORT=10
+REPORT=9
 
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
@@ -28,6 +28,8 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
     diskusage = element.text.to_i
     next unless path[/^\/ifs\/projects\//]
     next if path[/^\/ifs\/projects\/sftp/]
+    # remove "/ifs/projects/" prefix
+    path = path[14..-1]
     { :path => path, :usage => diskusage }
   }
   usages.select!{ |f| !f.nil?}

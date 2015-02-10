@@ -5,17 +5,17 @@ require 'time'
 require 'date'
 
 # glob for email repositories to scan
-EMAIL_GLOB="/ifs/home/andreas/mail/Local\ Folders/Projects.sbd/*"
-MULTIPLE="--multiple=TybulewiczLab=010:036 --multiple=DrakeLab=013:034:035"
+EMAIL_GLOB="/ifs/home/andreas/mail/Local Folders/Projects.sbd/*"
+MULTIPLE="--multiple=TybulewiczLab=010:036 --multiple=DrakeLab=013:034:035 --multiple=KnightLab=005:043"
 MAX_DAYS=35
 
 
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
   # returns a single line
-  # text = `python /ifs/devel/andreas/cgat/scripts/cgat_scan_email.py -v 0 --glob="#{EMAIL_GLOB}" #{MULTIPLE}`
+  text = `python /ifs/devel/andreas/cgat/scripts/cgat_scan_email.py -v 0 --glob="#{EMAIL_GLOB}" #{MULTIPLE}`
 
-  text = `cat /ifs/devel/andreas/dashboard/jobs/out.txt`
+  # text = `cat /ifs/devel/andreas/dashboard/jobs/out.txt`
 
   last_email = Hash.new(0)
 
