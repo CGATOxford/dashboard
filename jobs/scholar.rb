@@ -11,7 +11,7 @@ TITLE_LENGTH=40
 
 # file needs to be manually downloaded, no 
 # Google Scholar API.
-DOWNLOAD="/ifs/home/andreas/scholar.html"
+SCHOLAR_GLOB="/ifs/home/andreas/Documents/scholar/scholar*.html"
 
 # Regular expression mathing the following:
 # S='<td class="gsc_a_t"><a href=... class="gsc_a_at">TITLE</a><div class="gs_gray">AUTHORS</div><div class="gs_gray">REFERENCE<span class="gs_oph">, YEAR</span></div></td><td class="gsc_a_c"><a href=... class="gsc_a_ac">CITATIONS</a></td>'
@@ -23,7 +23,8 @@ REGEX=/<td class="gsc_a_t">.*<a.*>(?<title>.*)<\/a><div.*>(?<authors>.*)<\/div><
 SCHEDULER.every '10s', :first_in => '1s' do |job|
 
   # returns a single line
-  file = File.open(DOWNLOAD, :encoding=>"ISO-8859-1")
+  recent = Dir.glob(SCHOLAR_GLOB).max_by {|f| File.mtime(f)}
+  file = File.open(recent, :encoding=>"ISO-8859-1")
 
   # split table at </tr> tag and make sure
   # line starts with correct CSS class

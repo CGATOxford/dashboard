@@ -92,7 +92,7 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
       end
 
       # set class of repository to bad if any are failing
-      item['class'] = (items.find{|b|b["class"] == 'bad'}) ? 'bad' : 'good'
+      # item['class'] = (items.find{|b|b["class"] == 'bad'}) ? 'bad' : 'good'
       item['url'] = items.count ? 'https://travis-ci.org/%s' % repo_slug : ''
       # Only show items if some are failing
       item['items'] = (items.find{|b|b["class"] == 'bad'}) ? items : []

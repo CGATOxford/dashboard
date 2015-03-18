@@ -1,0 +1,86 @@
+<% content_for(:title) { "CGAT Dashboard" } %>
+
+<div class="gridster highcontrast">
+  <h1 class="header">CGAT Dashboard - Software development</h1>
+  <ul>
+
+    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
+      <div data-view="Image" data-image="/logo.png"></div>
+    </li>
+
+    <li data-row="1" data-col="2" data-sizex="3" data-sizey="1">
+      <div 
+        data-id="travis_master" 
+        data-view="NestedList"
+        data-title="Travis Build Status">
+      </div>
+    </li>
+
+    <li data-row="1" data-col="5" data-sizex="3" data-sizey="2">
+      <div 
+        data-id="travis_branches" 
+        data-view="NestedList"
+        data-title="Branches and build status">
+	data-moreinfo="Branches active in the last 60 days"
+      </div>
+    </li>
+
+    <li data-row="2" data-col="1" data-sizex="2" data-sizey="3">
+      <div 
+        data-id="leaderboard" 
+        data-view="Leaderboard" 
+        data-unordered="true">
+      </div>
+    </li>
+
+    <li data-row="2" data-col="3" data-sizex="2" data-sizey="1">
+      <div 
+        data-id="pull_requests" 
+        data-view="SeriesGraph" 
+        data-renderer="bar"
+        data-colors="#fff #888" 
+        data-title="Pulls opened this month" 
+        data-subtitle="Projected monthly trend compared to last month" 
+        data-padding-top="0.35"
+        class="widget-graph widget-graph-large-change-rate">
+      </div>
+    </li>
+
+    <li data-row="3" data-col="3" data-sizex="2" data-sizey="1">
+      <div 
+        data-id="issues_opened" 
+        data-view="SeriesGraph" 
+        data-renderer="bar"
+        data-colors="#fff #888" 
+        data-title="Issues opened this month" 
+        data-subtitle="Projected monthly trend compared to last month" 
+        data-padding-top="0.35"
+        class="widget-graph widget-graph-large-change-rate">
+      </div>
+    </li>
+
+    <li data-row="4" data-col="3" data-sizex="2" data-sizey="1">
+      <div 
+        data-id="issues_closed" 
+        data-view="SeriesGraph" 
+        data-renderer="bar"
+        data-colors="#fff #888" 
+        data-title="Issues closed this month" 
+        data-subtitle="Projected monthly trend compared to last month" 
+        data-padding-top="0.35"
+        class="widget-graph widget-graph-large-change-rate">
+      </div>
+    </li>
+
+    <li data-row="3" data-col="5" data-sizex="3" data-sizey="2">
+      <div 
+        data-id="recent_issues" 
+        data-view="List" 
+	data-title="Most recent open issues (Days open)"
+      </div>
+    </li>
+
+  </ul>
+  <footer data-id="meta_stats" data-view="Meta"></footer>
+</div>
+

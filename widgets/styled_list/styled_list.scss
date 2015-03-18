@@ -11,7 +11,7 @@ $moreinfo-color:    rgba(255, 255, 255, 0.7);
 // ----------------------------------------------------------------------------
 // Widget-list styles
 // ----------------------------------------------------------------------------
-.widget-list {
+.widget-styled-list {
 
   background-color: $background-color;
   vertical-align: top;
@@ -24,7 +24,6 @@ $moreinfo-color:    rgba(255, 255, 255, 0.7);
     margin: 0 15px;
     text-align: left;
     color: $label-color;
-    font-size: 15px;
   }
 
   ol {
