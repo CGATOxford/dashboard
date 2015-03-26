@@ -1,0 +1,158 @@
+// ----------------------------------------------------------------------------
+// Sass declarations
+// ----------------------------------------------------------------------------
+
+// row-size is a magic number used for scaling. It will make things bigger
+// or smaller but always in proportion with each other. Feel free to change
+// this to reflect your personal needs.
+$row-size: 0.7em;
+
+$white: #FFFFFF;
+$base-color: #333333;
+
+$base-color-dark: darken($base-color, 10%);
+$base-color-dark: #8BA2FF;
+$base-color-light: lighten($base-color, 10%);
+$base-color-lighter: lighten($base-color, 25%);
+$base-color-lightest: lighten($base-color, 35%);
+
+$warning-color: #FABE28;
+$warning-color-dark: darken($warning-color, 10%);
+$warning-color-light: lighten($warning-color, 10%);
+$warning-color-lighter: lighten($warning-color, 25%);
+$critical-color: #FF003C;
+$critical-color-dark: darken($critical-color, 10%);
+$critical-color-light: lighten($critical-color, 10%);
+$critical-color-lighter: lighten($critical-color, 25%);
+
+// $text-color:       $base-color-lightest;
+$text-color:          rgba(255, 255, 255, 0.7);
+
+// ----------------------------------------------------------------------------
+// Widget-project-completion styles
+// ----------------------------------------------------------------------------
+
+.widget.widget-hot-progress-bars {
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  position:relative;
+  vertical-align: baseline;
+
+  * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing:border-box;
+  }
+
+  .title {
+    color: $text-color;
+    margin-bottom: 5px;
+  }
+
+  .rows-container {
+    height: 85%;
+    width:100%;
+    color: $text-color;
+    font-size: $row-size;
+    text-align:center;
+  }
+
+  .row {
+    height:0%;
+    width:100%;
+    vertical-align: middle;
+    display:table;
+    transition-property: height;
+    transition-duration: 0.3s;
+    transition-timing-function: linear;
+  }
+
+  .row-content {
+    padding-left: 5px;
+    display:table-cell;
+    vertical-align: middle;
+  }
+
+  .project-name {
+    display:inline-block;
+    width:35%;
+    padding-right: $row-size;
+    text-align: left;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    white-space: nowrap;
+  }
+
+  .outer-hot-progress-bar {
+    display:inline-block;
+    width: 65%;
+    vertical-align: middle;
+    border-radius: 2 * $row-size;
+    border-width: ($row-size / 100);
+    border-style: solid;
+    
+    .inner-hot-progress-bar {
+      border-radius: $row-size / 2;
+      color: $white;
+    }
+
+    .inner-hot-progress-bar-ok {
+      background-color: $base-color-dark;
+    }
+
+    .inner-hot-progress-bar-warning {
+      background-color: $warning-color-dark;
+    }
+
+    .inner-hot-progress-bar-critical {
+      background-color: $critical-color-dark;
+    }
+  }
+
+  .outer-hot-progress-bar-ok {
+    background-color: $base-color-lighter;
+    border-color: $base-color-dark;
+   } 
+
+  .outer-hot-progress-bar-warning {
+    background-color: $warning-color-lighter;
+    border-color: $warning-color-dark;
+   } 
+
+  .outer-hot-progress-bar-critical {
+    background-color: $critical-color-lighter;
+    border-color: $critical-color-dark;
+   } 
+
+  .zebra-stripe {
+    #background-color: $base-color-light;
+    background-color: $base-color;
+  }
+}
+
+.widget.widget-hot-progress-bars-ok {
+  background-color: $base-color;
+
+  .zebra-stripe {
+    background-color: $base-color-light;
+  }
+}
+  
+.widget.widget-hot-progress-bars-warning {
+  background-color: $warning-color;
+
+  .zebra-stripe {
+    background-color: $warning-color-light;
+  }
+}
+  
+.widget.widget-hot-progress-bars-critical {
+  background-color: $critical-color;
+
+  .zebra-stripe {
+    background-color: $critical-color-light;
+  }
+}
+
