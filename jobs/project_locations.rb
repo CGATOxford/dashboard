@@ -1,6 +1,16 @@
-require 'csv'
+#!/usr/bin/env ruby
+# encoding: utf-8
+#
+# return project locations for map widget
+# 
+# Parameters taken from the configuration file:
+#
+# Location of table with project status information. This should be
+# a tab-separated file with the following 6 columns:
+# project_id, _, _, _, longitude, latitude
+FILENAME=ENV['PROJECT_SUMMARY']
 
-FILENAME="/ifs/home/andreas/projects.tsv"
+require 'csv'
 
 SCHEDULER.every '10s', :first_in => '1s' do
 

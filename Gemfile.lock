@@ -15,8 +15,11 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     addressable (2.3.7)
+    amq-protocol (1.9.2)
     backports (3.6.4)
     buftok (0.2.0)
+    bunny (1.7.0)
+      amq-protocol (>= 1.9.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
     coffee-script (2.2.0)
@@ -183,6 +186,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  bunny
   dashing
   dashing-contrib (~> 0.1.6)
   dotenv

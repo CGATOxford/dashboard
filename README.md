@@ -114,8 +114,9 @@ You'll need to sign up to Sentry to receive a valid DSN.
 
 # Contributing
 
-Pull requests are very welcome! Please make sure that the code you're fixing is actually
-part of this project, and not just generated from the upstream [Dashing]() library templates.
+Pull requests are very welcome! Please make sure that the code you're
+fixing is actually part of this project, and not just generated from
+the upstream [Dashing]() library templates.
 
 # Acknowledgements
 
@@ -135,6 +136,19 @@ To use this, type:
 
    gem install sentry-raven
    rackup -p 3030 -s webrick
+
+## Dependencies
+
+pypi.rb
+   [pypi][https://github.com/sloria/pypi-cli] command line interface.
+
+pipelines.rb
+   RabbitMQ
+
+
+
+
+
 
 
 

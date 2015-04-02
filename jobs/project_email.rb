@@ -1,19 +1,24 @@
-# return last email send in a project
-# 
+#!/usr/bin/env ruby
+# encoding: utf-8
+#
+# return list of projects flagged according to when an emal
+# was last sent. If within MAX_DAYS, the status is "good", otherwise
+# it is labeled as "BAD"
+
+# glob for email repositories to scan
+EMAIL_GLOB=["PROJECT_EMAIL_GLOB"]
+MULTIPLE=ENV["PROJECT_EMAIL_OPTIONS"] || ""
+MAX_DAYS=ENV["PROJECT_EMAIL_MAX_DAYS"].to_i || 35
+EMAIL_SCRIPT=["PROJECT_EMAIL_SCRIPT"]
+
 require 'csv'
 require 'time'
 require 'date'
 
-# glob for email repositories to scan
-EMAIL_GLOB="/ifs/home/andreas/mail/Local Folders/Projects.sbd/*"
-MULTIPLE="--multiple=TybulewiczLab=010:036 --multiple=DrakeLab=013:034:035 --multiple=KnightLab=005:043"
-MAX_DAYS=35
-
-
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
   # returns a single line
-  text = `python /ifs/devel/andreas/cgat/scripts/cgat_scan_email.py -v 0 --glob="#{EMAIL_GLOB}" #{MULTIPLE}`
+  text = `python #{EMAIL_SCRIPT} -v 0 --glob="#{EMAIL_GLOB}" #{MULTIPLE}`
 
   # text = `cat /ifs/devel/andreas/dashboard/jobs/out.txt`
 

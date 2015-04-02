@@ -1,9 +1,17 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
-
+#
+# poll pypi for download status for a list of
+# projects to be displayed as a list (label/value).
+#
+# This job requires the pypi-cli command line utility
+# to be installed. 
+#
+# Parameters taken from the configuration file:
+#
+# 1. List of projects to obtain projects from
 PYPI_PROJECTS = ENV['PYPI_PROJECTS'].split(',') if ENV['PYPI_PROJECTS']
 
-# SCHEDULER.every '3m', :first_in => 0 do |job|
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
   items = PYPI_PROJECTS.map do |project|

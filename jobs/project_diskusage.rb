@@ -1,11 +1,18 @@
-# return last email send in a project
+#!/usr/bin/env ruby
+# encoding: utf-8
+#
+# return disk usage per project as list of items (row/value)
 # 
+# Parameters taken from the configuration file:
+#
+# Location of isilon status files. This should be a glob expression
+# and the most recent file is used.
+REPORT_GLOB=ENV['PROJECT_IFS_STATS_GLOB']
+
 require 'csv'
 require 'time'
 require 'date'
 require 'nokogiri'
-
-REPORT_GLOB="/ifs/var/mon/isilon-disk/isilon-xml/scheduled_quota_report_*.xml"
 
 # Top x number of projects to report, "other" is added.
 REPORT=9
