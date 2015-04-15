@@ -90,9 +90,13 @@ class Dashing.HotProgressBars extends Dashing.Widget
 
     innerProgressBar = $("<div/>")
       .attr("class", "inner-hot-progress-bar")
-    innerProgressBar.css("width", "0%")
 
-    progressBarValue = $("<p/>").text("0%")
+    # AH: set not at 0%, but at current value
+    # innerProgressBar.css("width", "0%")
+    # progressBarValue = $("<p/>").text("0%")
+    # use 95% of value to force updating
+    innerProgressBar.css("width", 0.95 * item.progress + "%")
+    progressBarValue = $("<p/>").text(item.progress.toPrecision(3) + "%")
 
     # Put it all together.
     innerProgressBar.append(progressBarValue)

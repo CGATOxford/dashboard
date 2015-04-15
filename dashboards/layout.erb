@@ -17,18 +17,38 @@
   <link rel="icon" href="/assets/favicon.ico">
 
 </head>
-  <body>
-<!--    <div id="container"> -->
-    <div id="container" data-switcher-interval="60000" data-switcher-dashboards="software_hd,science_hd,projects_hd,cluster_hd,pipelines_hd,default_hd">
+
+<body>
+
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <style type='text/css'>
+    #dc-switcher-next { padding-left: 5px; }
+    #dc-switcher-next-name, #dc-switcher-countdown { color: #ddd; }
+    #dc-switcher-pause-reset { padding-left: 5px; }
+    #dc-switcher-controls { float: right; margin-right: 10px }
+    #dc-switcher-stopper:hover, #dc-switcher-next:hover { cursor: pointer; cursor: hand;}
+    .switcher-text { color: white; font-weight: bold }
+  </style>
+
+  <div id='dc-switcher-controls'>
+    <dashboard-name-template>
+      <span class='switcher-text'>Next:</span>
+      <em>&ensp;$nextName&ensp;</em>
+      <span class='switcher-text'>in&ensp;</span>
+    </dashboard-name-template>
+  </div>
+
+  <div id="container" data-switcher-interval="60000" data-switcher-dashboards="software_hd,science_hd,projects_hd,cluster_hd,pipelines_hd,default_hd">
       <%= yield %>
-    </div>
+  </div>
   
-    <% if development? %>
-      <div id="saving-instructions">
-        <p>Paste the following at the top of <i><%= params[:dashboard] %>.erb</i></p>
-        <textarea id="gridster-code"></textarea>
-      </div>
-      <a href="#saving-instructions" id="save-gridster">Save this layout</a>
-    <% end %>
-  </body>
+  <% if development? %>
+  <div id="saving-instructions">
+    <p>Paste the following at the top of <i><%= params[:dashboard] %>.erb</i></p>
+    <textarea id="gridster-code"></textarea>
+  </div>
+  <a href="#saving-instructions" id="save-gridster">Save this layout</a>
+  <% end %>
+</body>
 </html>

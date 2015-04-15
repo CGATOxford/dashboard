@@ -6,10 +6,11 @@
 # it is labeled as "BAD"
 
 # glob for email repositories to scan
-EMAIL_GLOB=["PROJECT_EMAIL_GLOB"]
+EMAIL_GLOB=ENV["PROJECT_EMAIL_GLOB"]
+EMAIL_SCRIPT=ENV["PROJECT_EMAIL_SCRIPT"]
+
 MULTIPLE=ENV["PROJECT_EMAIL_OPTIONS"] || ""
 MAX_DAYS=ENV["PROJECT_EMAIL_MAX_DAYS"].to_i || 35
-EMAIL_SCRIPT=["PROJECT_EMAIL_SCRIPT"]
 
 require 'csv'
 require 'time'

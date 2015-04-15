@@ -16,7 +16,9 @@
 KILL_DELAY=ENV['PIPELINES_DELAY'].to_i || 100
 #
 # 2. topic to listen to on RabbitMQ:
-TOPIC=ENV['PIPELINES_TOPIC' || "ruffus_pipelines"
+PIPELINES_TOPIC=ENV['PIPELINES_TOPIC'] || "ruffus_pipelines"
+# 3. host running RabbitMQ
+PIPELINES_HOST=ENV['PIPELINES_HOST'] || "localhost"
 #
 
 require 'bunny'
@@ -30,7 +32,7 @@ projects = Hash.new()
 # completed/failed stage
 kill_list = Hash.new(0)
 
-conn = Bunny.new(:automatically_recover => false)
+conn = Bunny.new(:host => PIPELINES_HOST, :automatically_recover => false)
 queue = nil
 
 SCHEDULER.every '10s' do
@@ -39,7 +41,7 @@ SCHEDULER.every '10s' do
     begin
       conn.start
       ch = conn.create_channel
-      exchange = ch.topic(TOPIC)
+      exchange = ch.topic(PIPELINES_TOPIC)
       queue = ch.queue("", :exclusive => true)
       # listen to all messages
       queue.bind(exchange, :routing_key => "#")
@@ -105,7 +107,7 @@ SCHEDULER.every '10s' do
     # add to kill list if not already present
     if !kill_list.has_key?(key) && 
         (cls == "failed_project" || cls == "completed_project")
-      kill_list[key] = KILL_DELAY1
+      kill_list[key] = KILL_DELAY
     end
 
     item = {
