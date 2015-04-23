@@ -24,7 +24,6 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
     }
   end
 
-  puts "#{items}"
   send_event('jenkins', {
                unordered: true,
                items: items,

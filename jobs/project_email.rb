@@ -12,6 +12,8 @@ EMAIL_SCRIPT=ENV["PROJECT_EMAIL_SCRIPT"]
 MULTIPLE=ENV["PROJECT_EMAIL_OPTIONS"] || ""
 MAX_DAYS=ENV["PROJECT_EMAIL_MAX_DAYS"].to_i || 35
 
+PROJECTS_CLOSED=ENV['PROJECT_EMAIL_CLOSED'].split(',') | []
+
 require 'csv'
 require 'time'
 require 'date'
@@ -36,27 +38,23 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
     end
   end
 
-  CLOSED_PROJECTS = ENV['PROJECTS_CLOSED'].split(',') if ENV['PROJECTS_CLOSED']
-  CLOSED_PROJECTS ||= []
+  items = last_email.reject { |project_id, days|
+    PROJECTS_CLOSED.select {
+      |name| project_id == name }.length > 0 }.map do |project_id, days|
 
-  items = last_email.map do |project_id, days|
-
-    to_skip = CLOSED_PROJECTS.select {
-      |name| project_id == name }.length > 0
-    next if to_skip
-
-    item = {
+    {
     'label' => "proj#{project_id}",
     'class' => days < MAX_DAYS ? "good" : "bad",
     'url' => 'https://travis-ci.org/CGATOxford/cgat',
     'items' => [],
     }
 
-    item
-
   end
+
+  items.sort_by! { |x| x["label"] }
+
   send_event('project_emails', {
-               unordered: true,
+               unordered: false,
                items: items
              })
 
