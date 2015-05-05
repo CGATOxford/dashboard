@@ -11,14 +11,15 @@ TITLE_LENGTH=40
 
 # file needs to be manually downloaded, no 
 # Google Scholar API.
-SCHOLAR_GLOB="/ifs/home/andreas/Documents/scholar/scholar*.html"
+SCHOLAR_GLOB=ENV["SCHOLAR_GLOB"]
 
 # Regular expression mathing the following:
 # S='<td class="gsc_a_t"><a href=... class="gsc_a_at">TITLE</a><div class="gs_gray">AUTHORS</div><div class="gs_gray">REFERENCE<span class="gs_oph">, YEAR</span></div></td><td class="gsc_a_c"><a href=... class="gsc_a_ac">CITATIONS</a></td>'
 
 # Note that citations can be empty, in which case they are "&nbsp;"
-
-REGEX=/<td class="gsc_a_t">.*<a.*>(?<title>.*)<\/a><div.*>(?<authors>.*)<\/div><div.*>(?<reference>.*)<span.*>, (?<year>\d+)<\/span.*><a.*>(?<citations>.*)<\/a>/
+# Multi-line mode essential as sometimes there are new-lines within
+# titles.
+REGEX=/<td class="gsc_a_t">.*<a.*>(?<title>.*)<\/a><div.*>(?<authors>.*)<\/div><div.*>(?<reference>.*)<span.*>, (?<year>\d+)<\/span.*><a.*>(?<citations>.*)<\/a>/m
 
 SCHEDULER.every '10s', :first_in => '1s' do |job|
 
