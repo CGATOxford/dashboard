@@ -27,9 +27,10 @@ SCHEDULER.every '10s', :first_in => '1s' do |job|
   recent = Dir.glob(SCHOLAR_GLOB).max_by {|f| File.mtime(f)}
   file = File.open(recent, :encoding=>"ISO-8859-1")
 
+  all_text = file.read()
   # split table at </tr> tag and make sure
   # line starts with correct CSS class
-  text = file.read().split("<tr ").select{
+  text = all_text.split("<tr ").select{
     |l| l[/^class="gsc_a_tr"/] }
 
   year_counts = Hash.new(0)

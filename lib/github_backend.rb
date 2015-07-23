@@ -2,10 +2,11 @@ require 'time'
 require 'octokit'
 require 'ostruct'
 require 'json'
-require 'active_support/core_ext'
+#require 'active_support/core_ext'
 require 'raven'
-require_relative 'event'
-require_relative 'event_collection'
+#require_relative 'event'
+#require_relative 'event_collection'
+Octokit.default_media_type = "application/vnd.github.ironman-preview+json"
 
 class GithubBackend
 
@@ -243,6 +244,10 @@ class GithubBackend
 	def organization_member?(org, user)
 		request('organization_member?', [org, user])
 	end
+
+        def organization_members(team)
+          request('organization_members', [team])
+        end
 
 	def get_repos(opts)
 		opts = OpenStruct.new(opts) unless opts.kind_of? OpenStruct
