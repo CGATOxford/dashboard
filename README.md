@@ -5,10 +5,6 @@
 Dashboards to monitor various metrics with the
 [CGAT][http://www.cgat.org] programme.
 
-The original dashboard has been derived from
-https://github.com/chillu/github-dashing from the
-[SilverStripe CMS](http://silverstripe.org).
-
 The dashboard has several sections:
 
 * Software - github issues and pull requests, travis build status
@@ -19,20 +15,20 @@ The dashboard has several sections:
 
 ## Setup
 
-### Generic Configuration
-
 First install the required dependencies through `bundle install`.
 
 The current version is tested with ruby 2.1.5. Version 2.2 failed due
 to some incompatabilities with the json gem.
 
-The project is configured through environment variables.
+The project is configured through environment variables set in the `.env`
+file.
 
-Copy the `.env.sample` configuration file to `.env`.
+### Leaderboard and software development
+
 All configuration is optional, apart from either `ORGAS` or `REPOS`.
 
 * `ORGAS`: Github organizations. Separate multiple by comma. Will use
-   all repos for an organization.  Example:
+   all repos for an organization. Example:
    `silverstripe,silverstripe-labs`.
 * `REPOS`: Github repository identifiers. Separate multiple by
    comma. If used alongside `ORGAS`, the logic will add all mentioned
@@ -41,8 +37,6 @@ All configuration is optional, apart from either `ORGAS` or `REPOS`.
 * `SINCE`: Date string, or relative time parsed through
    [http://guides.rubyonrails.org/active_support_core_extensions.html](ActiveSupport). Example:
    `12.months.ago.beginning_of_month`, `2012-01-01`
-* `GITHUB_LOGIN`: Github authentication is optional, but recommended
-* `GITHUB_OAUTH_TOKEN`: See above
 * `LEADERBOARD_WEIGHTING`: Comma-separated weighting pairs
    influencing the multiplication of values used for the leaderboard
    widget score.  Example:
@@ -60,19 +54,51 @@ All configuration is optional, apart from either `ORGAS` or `REPOS`.
    This is useful to ignore old branches which no longer have active builds.
    Example: `{"silverstripe-labs/silverstripe-newsletter":["0.3","0.4"]}`
 
-You can also specify a custom env file through setting a `DOTENV_FILE`
-environment variable first.  This is useful if you want to have
-version controlled defaults (see `.env.silverstripe`).
+### Pipelines
 
-### Custom Configuration
+The dashboard connects to a [www.rabbitmq.com](rabbitMQ) message exchange to communicate
+with our pipelines.
 
-The dashboard is used by the
-[SilverStripe CMS](http://silverstripe.org) project, some of the
-functionality is specific to this use case. Simply leave out the
-configuration values in case you're use case is different.
+* `PIPELINES_DELAY`, delay in s after which a completed/failed pipeline will be removed from the display
+* `PIPELINES_HOST`, host name of RabbitMQ server
+* `PIPELINES_TOPIC`, topic name of exchanges 
 
- * `FORUM_STATS_URL`: Absolute URL returning JSON data for forum
-   statistics such as "unanswered posts"
+### Disk usage
+
+The dashboard scans logs from our storage system to check disk usage per project.
+
+* `PROJECT_IFS_STATS_GLOB`, glob expression for Isilon summary files. The most recent report is used.
+
+### Project communication
+
+The dashboard goes through and email archive to find out when the last communication in a project
+took place.
+
+* `PROJECT_EMAIL_SCRIPT`, location of the script to scan emails (cgat_scan_email.py)
+* `PROJECT_EMAIL_MAX_DAYS`, number of days after which a project is flagged
+* `PROJECT_EMAIL_OPTIONS`, command line options to the script
+* `PROJECT_EMAIL_GLOB`, glob expression for the email folders to analyze
+* `PROJECT_EMAIL_CLOSED`, list of projects to exclude from display as they have been closen.
+
+### Jenkins pipeline regression tests
+
+The dashboard looks up the status of the regression tests on jenkins.
+
+* `JENKINS_HOST`, IP address of jenkins host.
+
+### Pypi downloads
+
+The dashboard reports the downloads of a list of projects hosted on pypi:
+
+* `PYPI_PROJECTS`, comma-separated list of pypi projects to monitor
+
+### Literature citation
+
+To track the number of citations, we download manually the number of citations from Google
+Scholar (as html page).
+
+* `SCHOLAR_GLOB`, glob expression for citation lists from Google Scholar. The most recent
+  report is used.
 
 ### Github API Access
 
@@ -100,18 +126,14 @@ Finally, start the dashboard server:
 
 Now you can browse the dashboard at `http://localhost:3030/default`.
 
+Alternatively, type:
+
+    rackup -p 3030 -s webrick
+
 ## Tasks
 
 The Dashing jobs query for their data whenever the server is started,
 and then with a frequency of 1h by default.
-
-## Logging through Sentry
-
-The project has optional [Sentry](http://getsentry.com) integration
-for logging exceptions.  Its particularly useful to capture Github API
-errors, e.g. when a project has been renamed.  To use it, configure
-your `SENTRY_DSN` in `.env` ([docs](https://getsentry.com/docs/)).
-You'll need to sign up to Sentry to receive a valid DSN.
 
 # Contributing
 
@@ -121,9 +143,9 @@ the upstream [Dashing]() library templates.
 
 # Acknowledgements
 
-Thanks to [SilverStripe Ltd.](http://silverstripe.com) for sponsoring
-the Heroku hosting and the physical dashboard at the SilverStripe
-offices in Wellington, New Zealand.
+The original dashboard has been derived from
+https://github.com/chillu/github-dashing from the
+[SilverStripe CMS](http://silverstripe.org).
 
 # License
 
