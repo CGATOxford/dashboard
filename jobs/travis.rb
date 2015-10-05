@@ -65,6 +65,7 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
         branch_name = commit['branch']
         
         # title=>"2014-03-07T19:25:04Z"
+        next if branch['finished_at'].nil?
         days = Time.now.to_date - Date.parse(branch['finished_at'])
         # ignore "old" branche
         if days > MAX_DAYS
