@@ -13,6 +13,14 @@ The dashboard has several sections:
 * Cluster - monitoring cluster and disk health
 * Science - monitoring publication metrics, twitter, etc.
 
+Some screenshots are below:
+
+![Main dashboard](images/default.png)
+![Cluster overview](images/cluster.png)
+![Project overview](images/projects.png)
+![Science overview](images/science.png)
+![Pipelines overview](images/pipelines.png)
+
 ## Setup
 
 First install the required dependencies through `bundle install`.
