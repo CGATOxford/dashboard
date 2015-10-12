@@ -19,7 +19,14 @@ REPORT=9
 
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
-  recent = Dir.glob(REPORT_GLOB).max_by {|f| File.mtime(f)}
+  files = Dir.glob(REPORT_GLOB)
+  if files.empty?
+    puts "scholar.rb: could not find data in #{REPORT_GLOB}"
+    break
+  end
+
+  recent = files.max_by {|f| File.mtime(f)}
+
   file = File.open(recent)
   doc = Nokogiri::XML(file.read())
   

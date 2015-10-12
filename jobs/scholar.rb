@@ -23,8 +23,14 @@ REGEX=/<td class="gsc_a_t">.*<a.*>(?<title>.*)<\/a><div.*>(?<authors>.*)<\/div><
 
 SCHEDULER.every '10s', :first_in => '1s' do |job|
 
+  files = Dir.glob(SCHOLAR_GLOB)
+  if files.empty?
+    puts "scholar.rb: could not find data in #{SCHOLAR_GLOB}"
+    break
+  end
+
   # returns a single line
-  recent = Dir.glob(SCHOLAR_GLOB).max_by {|f| File.mtime(f)}
+  recent = files.max_by {|f| File.mtime(f)}
   file = File.open(recent, :encoding=>"ISO-8859-1")
 
   all_text = file.read()
@@ -55,7 +61,7 @@ SCHEDULER.every '10s', :first_in => '1s' do |job|
       
   series = []
   year_counts.keys.sort.each do |year|
-    series << {
+    series << { 
       x: Date.new(year).to_time.to_i,
       y: year_counts[year],
     }
