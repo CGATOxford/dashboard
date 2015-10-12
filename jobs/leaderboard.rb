@@ -98,7 +98,7 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
   end if members 
 
   send_event('leaderboard', {
-               rows,
+               rows: rows,
                date_since: date_since.strftime("#{date_since.day.ordinalize} %b"),
                date_until: date_until.strftime("#{date_until.day.ordinalize} %b"),
              })
