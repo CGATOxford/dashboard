@@ -9,7 +9,7 @@ require 'open-uri'
 # ------
 twitter_username = ENV['TWITTER_USERNAME'] || 'cgat_oxford'
 
-SCHEDULER.every '2m', :first_in => 0 do |job|
+SCHEDULER.every '1h', :first_in => 0 do |job|
   doc = Nokogiri::HTML(open("https://twitter.com/#{twitter_username}"))
   tweets = doc.css('a[data-nav=tweets]').first.attributes['title'].value.split(' ').first
   followers = doc.css('a[data-nav=followers]').first.attributes['title'].value.split(' ').first

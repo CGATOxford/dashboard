@@ -3,20 +3,23 @@ require 'time'
 require 'dashing'
 require 'net/https'
 require 'cgi'
+require 'connection_pool'
 require File.expand_path('../../lib/travis_backend', __FILE__)
-# require File.expand_path('../../lib/scrutinizer_backend', __FILE__)
 
 $lastTravisItems = []
 
 # exclude branches older than this:
-MAX_AGE=60
+TRAVIS_MAX_DAYS=60
+
+TRAVIS_BACKEND = ConnectionPool.new(size: 3, timeout: 5) do
+  TravisBackend.new
+end
 
 SCHEDULER.every '2m', :first_in => '1s' do |job|
-  travis_backend = TravisBackend.new
-  # scrutinizer_backend = ScrutinizerBackend.new
-  repo_slugs = []
-  builds = []
 
+  # scrutinizer_backend = ScrutinizerBackend.new
+  builds = []
+    
   # Only look at release branches (x.y) and master, not at tags (x.y.z)
   master_whitelist = /^(\d+\.\d+$|master)/  
 
@@ -28,10 +31,14 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
   # TODO Move to configuration
   repo_slug_replacements = [/(silverstripe-australia\/|silverstripe-labs\/|silverstripe\/|silverstripe-)/,'']
 
-  if ENV['ORGAS']
-    ENV['ORGAS'].split(',').each do |orga|
-      repo_slugs = repo_slugs.concat(travis_backend.get_repos_by_orga(orga).collect{|repo|repo['slug']})
+  repo_slugs = TRAVIS_BACKEND.with do |conn|
+    l = []
+    if ENV['ORGAS']
+      ENV['ORGAS'].split(',').each do |orga|
+        l = l.concat(conn.get_repos_by_orga(orga).collect{|repo|repo['slug']})
+      end
     end
+    l
   end
 	
   if ENV['REPOS']
@@ -52,7 +59,9 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
     }
 
     # Travis info
-    repo_branches = travis_backend.get_branches_by_repo(repo_slug)
+    repo_branches = TRAVIS_BACKEND.with do |conn|
+        conn.get_branches_by_repo(repo_slug)
+    end
 
     if repo_branches and repo_branches['branches'].length > 0
       # Latest builds are listed under "branches",
@@ -67,8 +76,8 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
         # title=>"2014-03-07T19:25:04Z"
         next if branch['finished_at'].nil?
         days = Time.now.to_date - Date.parse(branch['finished_at'])
-        # ignore "old" branche
-        if days > MAX_DAYS
+        # ignore "old" branches
+        if days > TRAVIS_MAX_DAYS
           false
         # Ignore branches not in whitelist
         elsif not branch_whitelist.match(branch_name) 
@@ -99,29 +108,6 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
       item['items'] = (items.find{|b|b["class"] == 'bad'}) ? items : []
     end
 
-    # # Scrutinizer info
-    # scrutinizer_info = scrutinizer_backend.get_repo_info(repo_slug)
-    # if scrutinizer_info
-    #   scrutinizer_branch = scrutinizer_info['default_branch'] ? scrutinizer_info['default_branch'] : 'master'
-    #   scrutinizer_link = 'https://scrutinizer-ci.com/g/' + repo_slug
-    #   metrics = scrutinizer_info['applications'][scrutinizer_branch]['index']['_embedded']['project']['metric_values'] rescue {}
-    #   if metrics['scrutinizer.quality']
-    #     quality = metrics['scrutinizer.quality'].round
-    #     item['items'] << {
-    #       'label' => 'Qual: ' + String(quality),
-    #       'class' => 'rating rating-quality rating-' + String(quality),
-    #       'url' => scrutinizer_link
-    #     }
-    #   end
-    #   if metrics['scrutinizer.test_coverage']
-    #     coverage = metrics['scrutinizer.test_coverage']
-    #     item['items'] << {
-    #       'label' => 'Covrg: ' + String((coverage*100).round) + '%',
-    #       'class' => 'rating rating-coverage rating-' + String((coverage*10).round),
-    #       'url' => scrutinizer_link
-    #     }
-    #   end
-    # end
     item
   end
 

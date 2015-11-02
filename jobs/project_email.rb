@@ -10,7 +10,7 @@ EMAIL_GLOB=ENV["PROJECT_EMAIL_GLOB"]
 EMAIL_SCRIPT=ENV["PROJECT_EMAIL_SCRIPT"]
 
 MULTIPLE=ENV["PROJECT_EMAIL_OPTIONS"] || ""
-MAX_DAYS=ENV["PROJECT_EMAIL_MAX_DAYS"].to_i || 35
+EMAIL_MAX_DAYS=ENV["PROJECT_EMAIL_MAX_DAYS"].to_i || 35
 
 PROJECTS_CLOSED=ENV['PROJECT_EMAIL_CLOSED'].split(',') | []
 
@@ -44,7 +44,7 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 
     {
     'label' => "proj#{project_id}",
-    'class' => days < MAX_DAYS ? "good" : "bad",
+    'class' => days < EMAIL_MAX_DAYS ? "good" : "bad",
     'url' => 'https://travis-ci.org/CGATOxford/cgat',
     'items' => [],
     }

@@ -1,16 +1,21 @@
 require 'time'
 require 'dashing'
-require File.expand_path('../../lib/helper', __FILE__)
-require File.expand_path('../../lib/github_backend', __FILE__)
+
+GITHUB_BACKEND_POOL2 = ConnectionPool.new(size: 3, timeout: 5) do
+  conn = GithubBackend.new()
+  conn
+end
 
 # return list of most recent issues
-SCHEDULER.every '10m', :first_in => '1s' do |job|
-  backend = GithubBackend.new()
-  issues = backend.recent_issues(
-     :orgas=>(ENV['ORGAS'].split(',') if ENV['ORGAS']), 
-     :repos=>(ENV['REPOS'].split(',') if ENV['REPOS']),
-     :since=>ENV['SINCE'],
-     :limit=>10)
+SCHEDULER.every '1h', :first_in => '5s' do |job|
+  
+  issues = GITHUB_BACKEND_POOL2.with do |conn|
+    conn.recent_issues(
+                       :orgas=>(ENV['ORGAS'].split(',') if ENV['ORGAS']), 
+                       :repos=>(ENV['REPOS'].split(',') if ENV['REPOS']),
+                       :since=>ENV['SINCE'],
+                       :limit=>10)
+  end
 
   rows = {}
   issues.each { |issue|

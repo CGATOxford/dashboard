@@ -8,14 +8,21 @@
 # Host IP of jenkins instance
 JENKINS_HOST=ENV['JENKINS_HOST']
 
+require 'connection_pool'
 require 'jenkins_api_client'
+
+JENKINS_POOL = ConnectionPool.new(size: 3, timeout: 5) do
+   JenkinsApi::Client.new(:server_ip => JENKINS_HOST)
+end
 
 SCHEDULER.every '2m', :first_in => '1s' do |job|
 
-  @client = JenkinsApi::Client.new(:server_ip => JENKINS_HOST)
+  data = JENKINS_POOL.with do |conn|
+    conn.job.list_all_with_details
+  end
+
   # The following call will return all jobs matching 'Testjob'
-  items = @client.job.list_all_with_details.map do |jenkins_job|
-    
+  items = data.map do |jenkins_job|
     {
       'label' => jenkins_job['name'],
       'class' => (jenkins_job['color'] == "blue" ) ? 'good' : 'bad',

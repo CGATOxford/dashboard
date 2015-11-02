@@ -13,6 +13,8 @@ require 'raven'
 require 'json'
 require 'typhoeus'
 require 'typhoeus/adapters/faraday'
+require 'connection_pool'
+require File.expand_path('../lib/github_backend', __FILE__)
 
 if ENV['DOTENV_FILE']
   Dotenv.load ENV['DOTENV_FILE']
@@ -67,6 +69,14 @@ configure do
   end
 end
 
+# Global connection pool for accessing gitub
+$GITHUB_POOL = ConnectionPool.new(size: 3, timeout: 5) do
+  http = Net::HTTP.new("api.github.com", Net::HTTP.https_default_port())
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE # disable ssl certificate check
+  http
+end
+
 # class NoCompression
 #   def compress(string)
 #     # do nothing
@@ -74,6 +84,8 @@ end
 #   end
 # end
 # Sinatra::Application.sprockets.js_compressor = NoCompression.new
+
+
 
 map Sinatra::Application.assets_prefix do
   run Sinatra::Application.sprockets

@@ -18,7 +18,7 @@ gem 'jenkins_api_client'
 gem "sentry-raven", :git => "git@github.com:getsentry/raven-ruby.git"
 # gem "sentry-raven", :git => "https://github.com/getsentry/raven-ruby.git"
 gem 'rest-client'
-
+gem 'connection_pool'
 gem 'twitter'
 gem 'typhoeus'
 
