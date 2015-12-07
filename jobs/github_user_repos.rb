@@ -22,7 +22,7 @@ max_length = 7
 # order the list by the numbers
 ordered = true
 
-SCHEDULER.every '10s', :first_in => 0 do |job|
+SCHEDULER.every '30m', :first_in => 0 do |job|
 
   data = $GITHUB_POOL.with do |conn|
     response = conn.request(Net::HTTP::Get.new("/#{github_username}/repos"))
