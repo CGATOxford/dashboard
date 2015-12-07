@@ -14,7 +14,7 @@ github_username = ENV['GITHUB_USERINFO_USERNAME'] || 'users/CGATOxford'
 
 SCHEDULER.every '1h', :first_in => 0 do |job|
 
-  data = $github_pool.with do |conn| 
+  data = $GITHUB_POOL.with do |conn| 
     response = conn.request(Net::HTTP::Get.new("/#{github_username}"))
     if response.code != "200"
       puts "github api error (status-code: #{response.code})\n#{response.body}"

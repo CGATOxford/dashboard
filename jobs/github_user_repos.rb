@@ -22,16 +22,16 @@ max_length = 7
 # order the list by the numbers
 ordered = true
 
-SCHEDULER.every '1h', :first_in => 0 do |job|
+SCHEDULER.every '10s', :first_in => 0 do |job|
 
-  data = $github_pool.with do |conn|
+  data = $GITHUB_POOL.with do |conn|
     response = conn.request(Net::HTTP::Get.new("/#{github_username}/repos"))
     if response.code != "200"
       puts "github api error (status-code: #{response.code})\n#{response.body}"
     end
     JSON.parse(response.body)
   end
-
+  
   repos_forks = Array.new
   repos_watchers = Array.new
   data.each do |repo|
