@@ -217,20 +217,20 @@ class GithubBackend
 	# Returns list of issues
 	def recent_issues(opts)
           opts = OpenStruct.new(opts) unless opts.kind_of? OpenStruct
-          self.get_repos(opts).each do |repo|
+          client = Octokit::Client.new(
+                                       :login => ENV['GITHUB_LOGIN'],
+                                       :access_token => ENV['GITHUB_OAUTH_TOKEN']
+                                       )
+          
+          all_issues = self.get_repos(opts).map do |repo|
             begin
-              issues = request('issues',
-                               [repo, {:since => opts.since, :state => 'all'}])
-              # only take open issues
-              issues.select! do |issue|
-                issue.state == 'open'
-              end
+              issues = client.list_issues(repo,
+                                          {:state => 'open'})
             rescue Octokit::Error => exception
               Raven.capture_exception(exception)
             end
-            issues = issues.take(opts["limit"])
-            return issues
           end
+          return all_issues.flatten.take(opts["limit"])
         end
 
 	def user(name)

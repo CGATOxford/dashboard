@@ -20,9 +20,9 @@ SCHEDULER.every '1h', :first_in => '10s' do |job|
          :repos=>(ENV['REPOS'].split(',') if ENV['REPOS']),
          :since=>ENV['SINCE']).group_by_month(ENV['SINCE'].to_datetime)
     rescue Exception => e  
-      puts e.message  
-      puts e.backtrace.inspect
-      return
+      puts "ERROR in issues_status: #{e.message}"
+      puts "BACKTRACE: #{e.backtrace.inspect}"
+      next
     end
   end
 

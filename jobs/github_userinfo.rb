@@ -12,7 +12,7 @@ github_username = ENV['GITHUB_USERINFO_USERNAME'] || 'users/CGATOxford'
 # example for tracking an organisations repositories
 # github_username = 'orgs/foobugs'
 
-SCHEDULER.every '1h', :first_in => 0 do |job|
+SCHEDULER.every '1h', :first_in => '1m' do |job|
 
   data = $GITHUB_POOL.with do |conn| 
     response = conn.request(Net::HTTP::Get.new("/#{github_username}"))

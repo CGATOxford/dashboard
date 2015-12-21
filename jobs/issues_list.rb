@@ -19,10 +19,14 @@ SCHEDULER.every '1h', :first_in => '5s' do |job|
 
   rows = {}
   issues.each { |issue|
-    rows[issue.title] = {
-      label: issue.title,
-      value: ((Time.now - issue.created_at.to_time) / 1.day).to_int
-    }
+    begin
+      rows[issue.title] = {
+        label: issue.title,
+        value: ((Time.now - issue.created_at.to_time) / 1.day).to_int
+      }
+    rescue NoMethodError => exception
+      puts "# issues_list.rb: error ignored #{exception}"
+    end
   }
 
   send_event('recent_issues', {

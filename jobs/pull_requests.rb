@@ -8,7 +8,7 @@ GITHUB_BACKEND_POOL = ConnectionPool.new(size: 3, timeout: 5) do
   conn
 end
 
-SCHEDULER.every '1h', :first_in => '1s' do |job|
+SCHEDULER.every '1h', :first_in => '1m' do |job|
   series = [[],[]]
 
   pulls_by_period = GITHUB_BACKEND_POOL.with do |conn|
