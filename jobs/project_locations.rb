@@ -19,7 +19,7 @@ SCHEDULER.every '10s', :first_in => '1s' do
     project_id, department, institution, town, longitude, latitude = row
      markers << [longitude.to_f, latitude.to_f]
   end
-
+  # puts "markers=#{markers}"
   send_event('map', markers: markers)
 
 end

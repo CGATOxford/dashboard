@@ -6,8 +6,8 @@
 # it is labeled as "BAD"
 
 # glob for email repositories to scan
-EMAIL_GLOB=ENV["PROJECT_EMAIL_GLOB"]
-EMAIL_SCRIPT=ENV["PROJECT_EMAIL_SCRIPT"]
+EMAIL_USERNAME=ENV["PROJECT_EMAIL_USERNAME"]
+EMAIL_PASSWORD=ENV["PROJECT_EMAIL_PASSWORD"]
 
 MULTIPLE=ENV["PROJECT_EMAIL_OPTIONS"] || ""
 EMAIL_MAX_DAYS=ENV["PROJECT_EMAIL_MAX_DAYS"].to_i || 35
@@ -17,24 +17,26 @@ PROJECTS_CLOSED=ENV['PROJECT_EMAIL_CLOSED'].split(',') | []
 require 'csv'
 require 'time'
 require 'date'
+require 'gmail'
 
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
-  # returns a single line
-  text = `python #{EMAIL_SCRIPT} -v 0 --glob="#{EMAIL_GLOB}" #{MULTIPLE}`
+  d = Date.today - EMAIL_MAX_DAYS
 
-  # text = `cat /ifs/devel/andreas/dashboard/jobs/out.txt`
+  Gmail.connect(EMAIL_USERNAME, EMAIL_PASSWORD) do |gmail|
+    gmail.logged_in?
+    emails = gmail.inbox.emails(:after => d)
 
-  last_email = Hash.new(0)
+    last_email = Hash.new(0)
 
-  text.encode('UTF-8', :invalid => :replace, :replace => '').split("\n").each do |line|
-
-    next unless line[/project_id/].nil?
-    CSV.parse(line, {:col_sep => "\t"} ) do |row|
-       project_id, date, filename, scanned = row
-       d = Date.parse(date)
-       days = Time.now.to_date - d
-       last_email[project_id] = days.to_i
+    emails.each do |email|
+      d = Date.parse(email.date)
+      days = Time.now.to_date - d    
+      email.sender.each do |sender|
+        m = REGEX.match(sender.name)
+        next if m.nil?
+        last_email[m["project_id"]] = days.to_i
+      end
     end
   end
 
