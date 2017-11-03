@@ -5,12 +5,20 @@
 # projects to be displayed as a list (label/value).
 #
 # This job requires the pypi-cli command line utility
-# to be installed. 
+# to be installed. To do so, type:
+#
+# pip install pypi-cli
 #
 # Parameters taken from the configuration file:
 #
 # 1. List of projects to obtain projects from
 PYPI_PROJECTS = ENV['PYPI_PROJECTS'].split(',') if ENV['PYPI_PROJECTS']
+
+system("pypi")
+if $?.exitstatus != 0
+  raise "pypi is not installed - please install pypi-cli package"
+end
+                       
 
 SCHEDULER.every '1h', :first_in => '1s' do |job|
 
