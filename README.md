@@ -58,18 +58,13 @@ All configuration is optional, apart from either `ORGAS` or `REPOS`.
    branch" in Github only.  Example:
    `issues_opened=5,issues_closed=5,pull_requests_opened=10,pull_requests_closed=5,pull_request_comments=1,issue_comments=1,commit_comments=1,commits=20`
 * `LEADERBOARD_SKIP_ORGA_MEMBERS`: Exclude organization members from leaderboard. Useful to track "external" contributions. Comma-separated list oforganization names.
+
 * `TRAVIS_BRANCH_BLACKLIST`: A blacklist of branches ignored by repo, as a JSON string.
    This is useful to ignore old branches which no longer have active builds.
    Example: `{"silverstripe-labs/silverstripe-newsletter":["0.3","0.4"]}`
 
-### Pipelines
-
-The dashboard connects to a [www.rabbitmq.com](rabbitMQ) message exchange to communicate
-with our pipelines.
-
-* `PIPELINES_DELAY`, delay in s after which a completed/failed pipeline will be removed from the display
-* `PIPELINES_HOST`, host name of RabbitMQ server
-* `PIPELINES_TOPIC`, topic name of exchanges 
+* `TRAVIS_REPOSITORY_BLACKLIST`: A blacklist of repositories to ignore.
+   Example: `["pysam"]`
 
 ### Disk usage
 
@@ -77,28 +72,11 @@ The dashboard scans logs from our storage system to check disk usage per project
 
 * `PROJECT_IFS_STATS_GLOB`, glob expression for Isilon summary files. The most recent report is used.
 
-### Project communication
-
-The dashboard goes through and email archive to find out when the last communication in a project
-took place.
-
-* `PROJECT_EMAIL_SCRIPT`, location of the script to scan emails (cgat_scan_email.py)
-* `PROJECT_EMAIL_MAX_DAYS`, number of days after which a project is flagged
-* `PROJECT_EMAIL_OPTIONS`, command line options to the script
-* `PROJECT_EMAIL_GLOB`, glob expression for the email folders to analyze
-* `PROJECT_EMAIL_CLOSED`, list of projects to exclude from display as they have been closen.
-
 ### Jenkins pipeline regression tests
 
 The dashboard looks up the status of the regression tests on jenkins.
 
 * `JENKINS_HOST`, IP address of jenkins host.
-
-### Pypi downloads
-
-The dashboard reports the downloads of a list of projects hosted on pypi:
-
-* `PYPI_PROJECTS`, comma-separated list of pypi projects to monitor
 
 ### Literature citation
 
@@ -172,13 +150,6 @@ To use this, type:
    rackup -p 3030 -s webrick
 
 ## Dependencies
-
-pypi.rb
-   [pypi][https://github.com/sloria/pypi-cli] command line interface.
-
-pipelines.rb
-   RabbitMQ
-
 
 
 

@@ -1,18 +1,17 @@
 require 'json'
 require 'time'
-require 'dashing'
-require 'net/https'
-require 'cgi'
+require 'travis'
 require 'connection_pool'
-require File.expand_path('../../lib/travis_backend', __FILE__)
+require 'pry'
 
 $lastTravisItems = []
 
-# exclude branches older than this:
+# exclude branches older than this, can't seem to find information
+# on active/inactive branches in API.
 TRAVIS_MAX_DAYS=60
 
 TRAVIS_BACKEND = ConnectionPool.new(size: 3, timeout: 5) do
-  TravisBackend.new
+  Travis::Client.new(access_token: ENV['TRAVIS_TOKEN'])
 end
 
 SCHEDULER.every '2m', :first_in => '1s' do |job|
@@ -25,125 +24,124 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
 
   # accept all for branches
   branch_whitelist = /./
+  repo_blacklist = []
+  repo_blacklist = JSON.parse(ENV['TRAVIS_REPO_BLACKLIST']) if ENV['TRAVIS_REPO_BLACKLIST']
   branch_blacklist_by_repo = {}
   branch_blacklist_by_repo = JSON.parse(ENV['TRAVIS_BRANCH_BLACKLIST']) if ENV['TRAVIS_BRANCH_BLACKLIST']
 
-  # TODO Move to configuration
-  repo_slug_replacements = [/(silverstripe-australia\/|silverstripe-labs\/|silverstripe\/|silverstripe-)/,'']
+  TRAVIS_BACKEND.with do |client|
 
-  repo_slugs = TRAVIS_BACKEND.with do |conn|
-    l = []
-    if ENV['ORGAS']
-      ENV['ORGAS'].split(',').each do |orga|
-        l = l.concat(conn.get_repos_by_orga(orga).collect{|repo|repo['slug']})
+    next if client.user.repositories.nil?
+
+    branches = client.user.repositories.map do |repo|
+
+      if !repo.active?
+        next
       end
-    end
-    l
-  end
-	
-  if ENV['REPOS']
-    repo_slugs.concat(ENV['REPOS'].split(','))
-  end
+      
+      if repo_blacklist.include?(repo.name)
+        next
+      end
+      
+      item = {
+        'label' => repo.name,
+        'class' => 'none',
+        'url' => '',
+        'items' => [],
+      }
 
-  repo_slugs.sort!
+      puts("TRAVIS: working on repository #{repo.name}")
+      if repo.branches.nil?
+        puts("TRAVIS: no branches for #{repo.name} - skipping")
+        next
+      end
+      
+      if repo.branches and repo.branches.size > 0
 
-  branches = repo_slugs.map do |repo_slug|
-    label = repo_slug
-    label = repo_slug.gsub(repo_slug_replacements[0],
-                           repo_slug_replacements[1]) if repo_slug_replacements
-    item = {
-      'label' => label,
-      'class' => 'none',
-      'url' => '',
-      'items' => [],
-    }
+        items = repo.branches.each_value
+                  .select do |branch|
 
-    # Travis info
-    repo_branches = TRAVIS_BACKEND.with do |conn|
-        conn.get_branches_by_repo(repo_slug)
-    end
+          branch_name = branch.branch_info
 
-    if repo_branches and repo_branches['branches'].length > 0
-      # Latest builds are listed under "branches",
-      # but their corresponding branch name is
-      # stored through the "commits" association
-      items = repo_branches['branches']
-        .select do |branch|
-        commit = repo_branches['commits'].find{|commit|
-          commit['id'] == branch['commit_id']}
-        branch_name = commit['branch']
-        
-        # title=>"2014-03-07T19:25:04Z"
-        next if branch['finished_at'].nil?
-        days = Time.now.to_date - Date.parse(branch['finished_at'])
-        # ignore "old" branches
-        if days > TRAVIS_MAX_DAYS
-          false
-        # Ignore branches not in whitelist
-        elsif not branch_whitelist.match(branch_name) 
-          false
+          if branch.finished_at.nil?
+            false
+          # ignore "old" branches
+          elsif Time.now.to_date - branch.finished_at.to_date > TRAVIS_MAX_DAYS
+            false
+          # Ignore branches not in whitelist
+          elsif not branch_whitelist.match(branch_name) 
+            false
           # Ignore branches specifically blacklisted
-        elsif branch_blacklist_by_repo.has_key?(repo_slug) and branch_blacklist_by_repo[repo_slug].include?(branch_name)
-          false
-        else
-          true
+          elsif branch_blacklist_by_repo.has_key?(repo) and branch_blacklist_by_repo[repo].include?(branch_name)
+            false
+          else
+            true
+          end
         end
-      end
-        .map do |branch|
-        commit = repo_branches['commits'].find{|commit|commit['id'] == branch['commit_id']}
-        branch_name = commit['branch']
-        {
-          'class'=>(["passed","started","created"].include?(branch['state'])) ? 'good' : 'bad', # POSIX return code
-          'label'=>branch_name,
-          'title'=>branch['finished_at'],
-          'result'=>branch['state'],
-          'url'=> 'https://travis-ci.org/%s/builds/%d' % [repo_slug,branch['id']]
-        } 
-      end
+                  .map do |branch|
+          branch_name = branch.branch_info
+          {
+            'class'=>(["passed","started","created"].include?(branch.state)) ? "good" : "bad",
+            'color'=>branch.color,
+            'label'=>branch_name,
+            'title'=>branch.finished_at,
+            'result'=>branch.state,
+            'url'=> 'https://travis-ci.org/%s/builds/%d' % [repo.name, branch.id]
+          }
+        end
 
-      # set class of repository to bad if any are failing
-      # item['class'] = (items.find{|b|b["class"] == 'bad'}) ? 'bad' : 'good'
-      item['url'] = items.count ? 'https://travis-ci.org/%s' % repo_slug : ''
-      # Only show items if some are failing
-      item['items'] = (items.find{|b|b["class"] == 'bad'}) ? items : []
+        next if items.nil?
+        
+        # remove any nil's
+        items = items.compact
+        
+        # puts("#{items}")
+        # set class of repository to bad if any are failing        
+        item['class'] = (items.find{|b| b["class"] == "bad"}) ? 'bad' : 'good'
+        item['url'] = items.count ? 'https://travis-ci.org/%s' % repo.name : ''
+        # Only show items if some are failing
+        item['items'] = (items.find{|b| b["class"] == "bad"}) ? items : []
+      end
+      puts("TRAVIS: completed repository #{repo.name}")
+      item
     end
 
-    item
-  end
-
-  # Sort by name, then by status
-  branches.sort_by! do|item|
-    if item['class'] == 'bad'
-      [1,item['label']]
-    elsif item['class'] == 'good'
-      [2,item['label']]
-    else
-      [3,item['label']]
+    branches = branches.compact
+    
+    # Sort by name, then by status
+    branches.sort_by! do |item|
+      if item['class'] == 'bad'
+        [1, item['label']]
+      elsif item['class'] == 'good'
+        [2, item['label']]
+      else
+        [3, item['label']]
+      end
     end
-  end
 
-  # output master
-  master = branches.map do |repo|
-    s = repo['items'].select{|x| master_whitelist.match(x['label'])}
-    item = {
-      'label' => repo['label'],
-      'class' => (s.find{|b| b["class"] == 'bad'}) ? 'bad' : 'good',
-      'url' => repo['url'],
-      'items' => s,
-    }
-  end
+    # output master
+    master = branches.map do |repo|
+      s = repo['items'].select{|x| master_whitelist.match(x['label'])}
+      item = {
+        'label' => repo['label'],
+        'class' => (s.find{|b| b["class"] == 'bad'}) ? 'bad' : 'good',
+        'url' => repo['url'],
+        'items' => s,
+      }
+    end
 
-  if branches != $lastTravisItems
-    send_event('travis_master', {
-                 unordered: true,
-                 items: master,
-               })
-    send_event('travis_branches', {
-                 unordered: true,
-                 items: branches,
-               })
+    if branches != $lastTravisItems
+      send_event('travis_master', {
+                   unordered: true,
+                   items: master,
+                 })
+      send_event('travis_branches', {
+                   unordered: true,
+                   items: branches,
+                 })
+    end
+    
+    $lastTravisItems = branches
   end
-  
-  $lastTravisItems = branches
   
 end

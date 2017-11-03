@@ -17,6 +17,8 @@ end
 
 SCHEDULER.every '2m', :first_in => '1s' do |job|
 
+  puts("JENKINS will be queried on #{JENKINS_HOST}")
+
   data = JENKINS_POOL.with do |conn|
     conn.job.list_all_with_details
   end

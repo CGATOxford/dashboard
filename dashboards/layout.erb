@@ -7,12 +7,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <title><%= yield_content(:title) %></title>
-  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAPS_KEY'] %>&sensor=false&libraries=visualization"></script>
   <!-- The javascript and css are managed by sprockets. The files can be found in the /assets folder-->
   <script type="text/javascript" src="/assets/application.js"></script>
   <link rel="stylesheet" href="/assets/application.css">
   <link rel="stylesheet" href="/assets/custom.css">
-
   <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
   <link rel="icon" href="/assets/favicon.ico">
 
@@ -39,7 +37,7 @@
     </dashboard-name-template>
   </div>
 
-  <div id="container" data-switcher-interval="60000" data-switcher-dashboards="software_hd,science_hd,projects_hd,cluster_hd,pipelines_hd,default_hd">
+  <div id="container" data-switcher-interval="60000" data-switcher-dashboards="software_hd,impact_hd,cluster_hd,branches_hd">
       <%= yield %>
   </div>
   

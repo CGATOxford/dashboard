@@ -1,31 +1,16 @@
 <% content_for(:title) { "CGAT Dashboard" } %>
 
+<script type='text/javascript'>
+ $(function() {
+    Dashing.gridsterLayout('[{"col":1,"row":1,"size_x":2,"size_y":4},{"col":3,"row":1,"size_x":2,"size_y":1},{"col":3,"row":2,"size_x":2,"size_y":1},{"col":3,"row":3,"size_x":2,"size_y":1},{"col":5,"row":1,"size_x":3,"size_y":2}]')
+     });
+</script>
+
 <div class="gridster highcontrast">
   <h1 class="header">CGAT Dashboard - Software development</h1>
   <ul>
 
-    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
-      <div data-view="Image" data-image="/logo.png"></div>
-    </li>
-
-    <li data-row="1" data-col="2" data-sizex="3" data-sizey="1">
-      <div 
-        data-id="travis_master" 
-        data-view="NestedList"
-        data-title="Travis Build Status">
-      </div>
-    </li>
-
-    <li data-row="1" data-col="5" data-sizex="3" data-sizey="2">
-      <div 
-        data-id="travis_branches" 
-        data-view="NestedList"
-        data-title="Branches and build status"
-	data-moreinfo="Branches active in the last 60 days"
-      </div>
-    </li>
-
-    <li data-row="2" data-col="1" data-sizex="2" data-sizey="3">
+    <li data-row="1" data-col="1" data-sizex="2" data-sizey="4">
       <div 
         data-id="leaderboard" 
         data-view="Leaderboard" 
@@ -33,7 +18,7 @@
       </div>
     </li>
 
-    <li data-row="2" data-col="3" data-sizex="2" data-sizey="1">
+    <li data-row="1" data-col="2" data-sizex="2" data-sizey="1">
       <div 
         data-id="pull_requests" 
         data-view="SeriesGraph" 
@@ -46,7 +31,7 @@
       </div>
     </li>
 
-    <li data-row="3" data-col="3" data-sizex="2" data-sizey="1">
+    <li data-row="2" data-col="2" data-sizex="2" data-sizey="1">
       <div 
         data-id="issues_opened" 
         data-view="SeriesGraph" 
@@ -59,7 +44,7 @@
       </div>
     </li>
 
-    <li data-row="4" data-col="3" data-sizex="2" data-sizey="1">
+    <li data-row="3" data-col="2" data-sizex="2" data-sizey="1">
       <div 
         data-id="issues_closed" 
         data-view="SeriesGraph" 
@@ -72,7 +57,7 @@
       </div>
     </li>
 
-    <li data-row="3" data-col="5" data-sizex="3" data-sizey="2">
+    <li data-row="1" data-col="5" data-sizex="3" data-sizey="2">
       <div 
         data-id="recent_issues" 
         data-view="List" 

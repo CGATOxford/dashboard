@@ -14,6 +14,7 @@ gem 'faraday-http-cache'
 gem 'activesupport'  # , '3.2.21'
 gem 'rspec'
 gem 'rspec-mocks'
+gem 'travis'
 gem 'bunny'
 gem 'jenkins_api_client'
 gem "sentry-raven", :git => "git@github.com:getsentry/raven-ruby.git"

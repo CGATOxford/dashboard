@@ -4,7 +4,7 @@
 # 
 # 17.4T is removed as this is our critical threshold
 # (80% disk usage)
-OFFSET = 17.4
+OFFSET = 0
 
 last = nil
 
