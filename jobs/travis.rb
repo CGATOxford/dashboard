@@ -16,18 +16,16 @@ end
 
 SCHEDULER.every '2m', :first_in => '1s' do |job|
 
-  # scrutinizer_backend = ScrutinizerBackend.new
-  builds = []
-    
   # Only look at release branches (x.y) and master, not at tags (x.y.z)
   master_whitelist = /^(\d+\.\d+$|master)/  
 
   # accept all for branches
   branch_whitelist = /./
   repo_blacklist = []
-  repo_blacklist = JSON.parse(ENV['TRAVIS_REPO_BLACKLIST']) if ENV['TRAVIS_REPO_BLACKLIST']
+  # remove quotes around array
+  repo_blacklist = (ENV['TRAVIS_REPO_BLACKLIST'].split(",") if ENV['TRAVIS_REPO_BLACKLIST'])
   branch_blacklist_by_repo = {}
-  branch_blacklist_by_repo = JSON.parse(ENV['TRAVIS_BRANCH_BLACKLIST']) if ENV['TRAVIS_BRANCH_BLACKLIST']
+  # branch_blacklist_by_repo = JSON.parse(ENV['TRAVIS_BRANCH_BLACKLIST']) if ENV['TRAVIS_BRANCH_BLACKLIST']
 
   TRAVIS_BACKEND.with do |client|
 
@@ -53,6 +51,7 @@ SCHEDULER.every '2m', :first_in => '1s' do |job|
       puts("TRAVIS: working on repository #{repo.name}")
       if repo.branches.nil?
         puts("TRAVIS: no branches for #{repo.name} - skipping")
+        puts("TRAVIS: #{repo}")
         next
       end
       

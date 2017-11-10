@@ -14,7 +14,9 @@ SCHEDULER.every '2s', :first_in => '1s' do |job|
 
   lines.split("\n").each do |line|
      s = line.split()
-    
+
+     next if s[5].nil? or s[4].nil? or s[3] == "-"
+
      cpu_items << 
         { name: s[0],
           progress: 100.0 * s[3].to_f / s[2].to_i,
@@ -22,8 +24,6 @@ SCHEDULER.every '2s', :first_in => '1s' do |job|
       critical: CRITICAL,
       localScope: 0}
 
-
-     next if s[5].nil? or s[4].nil?
      n = s[5].to_f
      d = s[4].to_f
      # Scale to Gb

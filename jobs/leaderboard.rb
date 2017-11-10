@@ -9,8 +9,17 @@ require File.expand_path('../../lib/leaderboard', __FILE__)
 backend = GithubBackend.new()
 leaderboard = Leaderboard.new(backend)
 
-SCHEDULER.every '1h', :first_in => '1s' do |job|
-  
+LEADERBOARD_MAX_ENTRIES = ENV["LEADERBOARD_MAX_ENTRIES"] ? ENV["LEADERBOARD_MAX_ENTRIES"].to_i : 20
+
+ORGAS = ENV['ORGAS'].split(',') if ENV['ORGAS']
+puts("LEADERBOARD: contributions to organizations: #{ORGAS}")
+
+REPOS = ENV['REPOS'].split(',') if ENV['REPOS']
+puts("LEADERBOARD: contributions to repos: #{REPOS}")
+
+SCHEDULER.every '1m', :first_in => '1s' do |job|
+
+  puts("LEADERBOAD: starting data acquisition")
   weighting = (ENV['LEADERBOARD_WEIGHTING'] || '').split(',')
     .inject({}) {|c,pair|c.merge Hash[*pair.split('=')]}
   
@@ -24,17 +33,20 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
   date_since = date_until - days_interval*2
   
   actors = leaderboard.get( 
-                           :days_interval => days_interval,
-                           :date_until => date_until,
-                           :orgas=>(ENV['ORGAS'].split(',') if ENV['ORGAS']), 
-                           :repos=>(ENV['REPOS'].split(',') if ENV['REPOS']),
-                           :weighting=>weighting,
-                           :edits_weighting=>edits_weighting,
-                           :skip_orga_members=>(ENV['LEADERBOARD_SKIP_ORGA_MEMBERS'].split(',') if ENV['LEADERBOARD_SKIP_ORGA_MEMBERS']),
-                           :skip_members=>(ENV['LEADERBOARD_SKIP_MEMBERS'].split(',') if ENV['LEADERBOARD_SKIP_MEMBERS'])
-                           )
+    :days_interval => days_interval,
+    :date_until => date_until,
+    :orgas=>ORGAS,
+    :repos=>REPOS,
+    :weighting=>weighting,
+    :edits_weighting=>edits_weighting,
+    :skip_orga_members=>(ENV['LEADERBOARD_SKIP_ORGA_MEMBERS'].split(',') if ENV['LEADERBOARD_SKIP_ORGA_MEMBERS']),
+    :skip_members=>(ENV['LEADERBOARD_SKIP_MEMBERS'].split(',') if ENV['LEADERBOARD_SKIP_MEMBERS'])
+  )
 
+  puts("LEADERBOAD: got actors: #{actors}")
+  
   rows = actors.map do |actor|
+
     actor_github_info = backend.user(actor[0])
     
     if actor_github_info['avatar_url']
@@ -64,12 +76,9 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
     }
   end if actors
         
-  # add members not atcive in recent period
+  # add members not active in recent period
   members = backend.organization_members('CGATOxford')
-  # puts "members=#{members}"
-  # puts "rows=#{rows}"
   present = Hash[rows.collect { |v| [v[:nickname], 1] }]
-  # puts "present=#{present}"
   members.select { |i| !present.has_key?(i[:login]) }.each do |item|
     
     actor_github_info = backend.user(item[:login])
@@ -98,9 +107,13 @@ SCHEDULER.every '1h', :first_in => '1s' do |job|
 
   end if members 
 
+  rows = rows.sort_by{ |f| -f[:current_score]}[0..LEADERBOARD_MAX_ENTRIES]
+  
   send_event('leaderboard', {
                rows: rows,
                date_since: date_since.strftime("#{date_since.day.ordinalize} %b"),
                date_until: date_until.strftime("#{date_until.day.ordinalize} %b"),
              })
+
+  puts("LEADERBOAD: data has been sent")
 end

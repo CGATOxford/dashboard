@@ -4,7 +4,7 @@
 require 'time'
 
 # number of top cited papers to include
-TOP_CITED=10
+TOP_CITED=100
 
 # length of title to return
 TITLE_LENGTH=40

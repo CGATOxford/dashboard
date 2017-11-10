@@ -250,10 +250,10 @@ class GithubBackend
         end
 
 	def get_repos(opts)
-		opts = OpenStruct.new(opts) unless opts.kind_of? OpenStruct
+	        opts = OpenStruct.new(opts) unless opts.kind_of? OpenStruct
 		repos = []
 		if opts.repos != nil
-			repos = repos.concat(opts.repos)
+			return repos.concat(opts.repos)
 		end
 		if opts.orgas != nil
 			opts.orgas.each do |orga|
@@ -264,7 +264,6 @@ class GithubBackend
 				end
 			end
 		end
-
 		return repos
 	end
 

@@ -10,10 +10,10 @@ class Dashing.Pie extends Dashing.Widget
     if(!data)
         return
 
-    width = 250    
-    height = 250   
-    radius = 125   
-    label_radius = 110
+    width = 200    
+    height = 200   
+    radius = 100
+    label_radius = 90
     color = d3.scale.category20()
 
     $(@node).children("svg").remove();
@@ -55,9 +55,9 @@ class Dashing.Pie extends Dashing.Widget
     #
     legend = d3.select(@node).append("svg:svg")
       .attr("class", "legend")
-      .attr("x", 0)
+      .attr("x", 10)
       .attr("y", 0)
-      .attr("height", 300)
+      .attr("height", 200)
       .attr("width", 200)
     
     legend.selectAll("g").data(data)
@@ -80,7 +80,7 @@ class Dashing.Pie extends Dashing.Widget
         g.append("text")
           .attr("x", (col * 100) + 30) 
           .attr("y", (row + 1) * 30 - 12)
-          .attr("font-size", "20px")
+          .attr("font-size", "15px")
           .attr("height", 60)
           .attr("width", 150)
           .attr("fill", "#FFF")
