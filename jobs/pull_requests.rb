@@ -1,6 +1,7 @@
 require 'json'
 require 'time'
 require 'dashing'
+require 'connection_pool'
 require File.expand_path('../../lib/helper', __FILE__)
 
 GITHUB_BACKEND_POOL = ConnectionPool.new(size: 3, timeout: 5) do
